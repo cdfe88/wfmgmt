@@ -1,1 +1,1 @@
-streamlit
+streamlit, pyworkforce, plotly
