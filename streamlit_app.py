@@ -190,8 +190,16 @@ def calculate_resources(demand):
     c_ovt=pd.merge(reqs,ovrt,how='left',on='shift')
     r_c_ovt=pd.merge(r_reqs,ovrt,how='left',on='shift')
     wfm={'FTE':c_ovt['resources'].sum()//5,'OT':(c_ovt['resources']*c_ovt['overtime']).sum()+8*(c_ovt['resources'].sum()%5),'FTE (no shrinkage)':r_c_ovt['resources'].sum()//5,'OT (no shrinkage)':(r_c_ovt['resources']*r_c_ovt['overtime']).sum()+8*(r_c_ovt['resources'].sum()%5)}
-    sched=reqs.pivot(index='shift',columns='weekday',values='resources')
-    r_sched=r_reqs.pivot(index='shift',columns='weekday',values='resources')
+    sched=reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
+    sched[['shift start','shift end']]=sched['shift'].str.split(' - ', expand=True)
+    sched['shift start']=pd.to_datetime(sched['shift start'],format='%H:%M:%S').dt.time
+    sched['shift end']=pd.to_datetime(sched['shift end'],format='%H:%M:%S').dt.time
+    sched=sched.sort_values(by=['shift start','shift end'])
+    r_sched=r_reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
+    r_sched[['shift start','shift end']]=r_sched['shift'].str.split(' - ', expand=True)
+    r_sched['shift start']=pd.to_datetime(r_sched['shift start'],format='%H:%M:%S').dt.time
+    r_sched['shift end']=pd.to_datetime(r_sched['shift end'],format='%H:%M:%S').dt.time
+    r_sched=r_sched.sort_values(by=['shift start','shift end'])
     #sched=pd.merge(r_reqs,reqs,how='outer',on=['day','shift'],suffixes=(' min',''))
     #occ=pd.DataFrame([[k,v] for k,v in shifts.items()])
     #occ.columns=['shift','dist']
