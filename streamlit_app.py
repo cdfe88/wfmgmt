@@ -195,11 +195,13 @@ def calculate_resources(demand):
     sched['shift start']=pd.to_datetime(sched['shift start'],format='%H:%M:%S').dt.time
     sched['shift end']=pd.to_datetime(sched['shift end'],format='%H:%M:%S').dt.time
     sched=sched.sort_values(by=['shift start','shift end'])
+    sched=sched.drop(columns=['shift start','shift end'])
     r_sched=r_reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
     r_sched[['shift start','shift end']]=r_sched['shift'].str.split(' - ', expand=True)
     r_sched['shift start']=pd.to_datetime(r_sched['shift start'],format='%H:%M:%S').dt.time
     r_sched['shift end']=pd.to_datetime(r_sched['shift end'],format='%H:%M:%S').dt.time
     r_sched=r_sched.sort_values(by=['shift start','shift end'])
+    r_sched=r_sched.drop(columns=['shift start','shift end'])
     #sched=pd.merge(r_reqs,reqs,how='outer',on=['day','shift'],suffixes=(' min',''))
     #occ=pd.DataFrame([[k,v] for k,v in shifts.items()])
     #occ.columns=['shift','dist']
@@ -451,8 +453,8 @@ if __name__ == '__main__':
         with tab3:
             col1,col2=st.columns(2)
             with col1:
+                st.write('Historic Data')
                 st.dataframe(h_sch)
-                st.dataframe(h_r_sch)
             with col2:
+                st.write('Projected Scenario')
                 st.dataframe(p_sch)
-                st.dataframe(h_r_sch)
