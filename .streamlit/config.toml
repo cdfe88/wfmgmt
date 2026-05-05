@@ -821,7 +821,6 @@ textColor ="#ffffff"
 # Whether to show a vertical separator between the sidebar and the main
 # content area.
 # showSidebarBorder =
-
 # An array of colors to use for categorical chart data.
 # 
 # This is a list of one or more color strings which are applied in order
