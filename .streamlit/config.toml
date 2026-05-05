@@ -858,7 +858,7 @@ textColor ="#ffffff"
 # "#6d3fc0", # purple80
 # "#d5dae5", # gray40
 # ]
-# chartCategoricalColors =
+chartCategoricalColors = ["#398ef4","#00a4f6","#8799ff","#cf86f1","#ff74c8","#ff7292","#ff865a","#eea525","#b6c100","#ffb000"]
 
 # An array of ten colors to use for sequential or continuous chart data.
 # 
@@ -894,7 +894,7 @@ textColor ="#ffffff"
 # "#c7ebff", #blue20
 # "#e4f5ff", #blue10
 # ]
-# chartSequentialColors =
+chartSequentialColors = ["#398ef4","#649df6","#7ba8f7","#8fb3f9","#a3bffa","#b5cafb","#c6d6fc","#d7e2fd","#e8eefe","#ffffff"]
 
 # An array of ten colors to use for diverging chart data.
 # 
