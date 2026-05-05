@@ -382,7 +382,7 @@ backgroundColor ="#3d3d3d"
 secondaryBackgroundColor ="#808080"
 
 # Color used for almost all text.
-# textColor ="#ffffff"
+textColor ="#ffffff"
 
 # Red color used in the basic color palette.
 # 
