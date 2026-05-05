@@ -370,7 +370,7 @@
 # A TOML theme file must contain a [theme] table with theme options.
 # Any theme options defined in the app's config.toml file will override
 # those defined in the TOML theme file.
-# base =
+# base = "dark"
 
 # Primary accent color.
 # primaryColor ="#0000b3"
