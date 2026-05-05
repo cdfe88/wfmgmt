@@ -416,13 +416,18 @@ if __name__ == '__main__':
                     md2={'Historic Values':h2,'Projected Values':p2}
                     ord2=pd.DataFrame(md2)
                     ord2['% Change']=(ord2['Projected Values']-ord2['Historic Values'])/ord2['Historic Values']
-                    ords2=ord2.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
+                    #ords2=ord2.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
                     st.write("Weekly Workload Distribution (hours)")
-                    st.table(ords2)
-                    ord3=pd.DataFrame({'Historic':ord2['Historic Values'].sum(),'Projected':ord2['Projected Values'].sum()},index=pd.Index(['Total Workload']))
-                    ord3['% Change']=(ord3['Projected']-ord3['Historic'])/ord3['Historic']
-                    ords3=ord3.style.format({"Historic": "{:,.0f}","Projected": "{:,.0f}", "% Change": "{:.1%}"})
-                    st.table(ords3)
+                    #st.table(ords2)
+                    ord3=pd.DataFrame({'Historic Values':ord2['Historic Values'].sum(),'Projected Values':ord2['Projected Values'].sum()},index=pd.Index(['Total Workload']))
+                    ord3['% Change']=(ord3['Projected Values']-ord3['Historic Values'])/ord3['Historic Values']
+                    ord4=pd.concat([ord2,ord3])
+                    ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
+                    st.table(ords4)
+                    #ord5.reset_index()
+                    ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
+                    ord5=ord5.reset_index(names=['Activity'])
+                    st.table(ord5)
                     fig2=px.bar(ord2[['Historic Values','Projected Values']].T,labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity'})
                     st.plotly_chart(fig2)
         with tab2:
