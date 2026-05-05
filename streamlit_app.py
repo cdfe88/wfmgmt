@@ -28,6 +28,12 @@ def workload_ini():
     #wload = wload[(wload['Day'] != 'Sunday') & ~((wload['Day'] == 'Saturday') & (wload['Sat Open'].isna() | (wload['Hour'] <= wload['Sat Open'] | wload['Hour'] >= wload['Sat Close']))) & (wload['Hour'] >= wload['Open']) & (wload['Hour'] < wload['Close'])]
     wload=wload[~wload['drop']]
     wload=wload.sort_values(['Day','Hour'])
+    dates=set(list(zip(wload['Date'],wload['Day'],wload['Day'].str[:3])))
+    c=[]
+    for x in dates:
+        c.append([x[0].year,x[0].month,x[1],np.busday_count(x[0],x[0].replace(year=x[0].month // 12 +x[0].year,month=x[0].month % 12 +1),x[2]).item()])
+    cal=pd.DataFrame(c,columns=['Year','Month','Day','count'])
+    wload = pd.merge(wload,cal, on=['Year','Month','Day'],how="left")
     return wload
 
 def workload_agg(wload):
@@ -424,11 +430,10 @@ if __name__ == '__main__':
                     ord4=pd.concat([ord2,ord3])
                     ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
                     st.table(ords4)
-                    #ord5.reset_index()
                     ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ord5=ord5.reset_index(names=['Activity'])
-                    st.table(ord5)
-                    fig2=px.bar(ord2[['Historic Values','Projected Values']].T,labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity'})
+                    ord5['percentage_of_total'] = ord5['value'] / ord5.groupby('Scenario')['value'].transform('sum')
+                    fig2=px.bar(ord5,x='Scenario',y='value',color='Activity',labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity','percentage_of_total':"% of Workload"},hover_data={'Activity': False,'Scenario': False,'value':':.1f','percentage_of_total':':.1%'})
                     st.plotly_chart(fig2)
         with tab2:
             hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff,sl,max_util)

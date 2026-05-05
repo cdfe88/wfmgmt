@@ -1,0 +1,635 @@
+Market,YEAR,MONTH,Media Type,Handle Time (seconds),Interactions
+Atlanta,2025,5,callback,38,6
+Atlanta,2025,5,email,12637,433
+Atlanta,2025,5,message,522,22
+Atlanta,2025,5,voice,1123137,9221
+Atlanta,2025,6,callback,15,2
+Atlanta,2025,6,email,16969,461
+Atlanta,2025,6,message,76,8
+Atlanta,2025,6,voice,1171416,9372
+Atlanta,2025,7,callback,36,5
+Atlanta,2025,7,email,18848,511
+Atlanta,2025,7,voice,1256655,10374
+Atlanta,2025,8,callback,30,2
+Atlanta,2025,8,email,17074,437
+Atlanta,2025,8,voice,1042497,9292
+Atlanta,2025,9,callback,6,1
+Atlanta,2025,9,email,13594,557
+Atlanta,2025,9,voice,1091253,9366
+Atlanta,2025,10,callback,17,2
+Atlanta,2025,10,email,16898,656
+Atlanta,2025,10,voice,1040782,8774
+Atlanta,2025,11,callback,22,3
+Atlanta,2025,11,email,13245,415
+Atlanta,2025,11,voice,926566,7623
+Atlanta,2025,12,callback,39,3
+Atlanta,2025,12,email,8669,330
+Atlanta,2025,12,voice,901865,7137
+Atlanta,2026,1,callback,6,1
+Atlanta,2026,1,email,14007,395
+Atlanta,2026,1,voice,900509,7092
+Atlanta,2026,2,email,21422,539
+Atlanta,2026,2,voice,1124256,8747
+Atlanta,2026,3,callback,16,2
+Atlanta,2026,3,email,19549,522
+Atlanta,2026,3,voice,1209036,9692
+Atlanta,2026,4,email,22601,610
+Atlanta,2026,4,voice,1126005,8780
+Cantonment,2025,5,callback,254,44
+Cantonment,2025,5,voice,406800,3523
+Cantonment,2025,6,callback,144,26
+Cantonment,2025,6,voice,406484,3516
+Cantonment,2025,7,callback,167,25
+Cantonment,2025,7,voice,339607,3332
+Cantonment,2025,8,callback,103,16
+Cantonment,2025,8,voice,327979,3097
+Cantonment,2025,9,callback,80,14
+Cantonment,2025,9,voice,340073,2996
+Cantonment,2025,10,callback,116,25
+Cantonment,2025,10,voice,372299,3260
+Cantonment,2025,11,callback,68,13
+Cantonment,2025,11,voice,284549,2454
+Cantonment,2025,12,callback,85,18
+Cantonment,2025,12,voice,302289,2474
+Cantonment,2026,1,callback,152,31
+Cantonment,2026,1,voice,350564,2831
+Cantonment,2026,2,callback,259,38
+Cantonment,2026,2,voice,370013,2929
+Cantonment,2026,3,callback,312,75
+Cantonment,2026,3,voice,387549,3218
+Cantonment,2026,4,callback,228,49
+Cantonment,2026,4,voice,378679,2949
+Central AL,2025,5,callback,33,5
+Central AL,2025,5,email,3633,89
+Central AL,2025,5,voice,600899,4650
+Central AL,2025,6,callback,12,2
+Central AL,2025,6,email,7333,139
+Central AL,2025,6,voice,645962,5045
+Central AL,2025,7,callback,166,4
+Central AL,2025,7,email,6630,187
+Central AL,2025,7,voice,654533,5176
+Central AL,2025,8,callback,65,6
+Central AL,2025,8,email,6765,194
+Central AL,2025,8,voice,579221,5181
+Central AL,2025,9,callback,55,5
+Central AL,2025,9,email,7450,172
+Central AL,2025,9,voice,687468,5621
+Central AL,2025,10,callback,190,7
+Central AL,2025,10,email,10769,235
+Central AL,2025,10,voice,636195,5060
+Central AL,2025,11,callback,197,5
+Central AL,2025,11,email,9661,155
+Central AL,2025,11,voice,671310,4912
+Central AL,2025,12,callback,346,12
+Central AL,2025,12,email,9157,187
+Central AL,2025,12,voice,586089,4491
+Central AL,2026,1,callback,77,12
+Central AL,2026,1,email,10614,201
+Central AL,2026,1,voice,574242,4456
+Central AL,2026,2,callback,123,8
+Central AL,2026,2,email,11143,182
+Central AL,2026,2,voice,595402,4734
+Central AL,2026,3,callback,215,10
+Central AL,2026,3,email,13365,322
+Central AL,2026,3,voice,633262,5455
+Central AL,2026,4,callback,374,14
+Central AL,2026,4,email,14696,433
+Central AL,2026,4,voice,604751,5056
+Demopolis,2025,5,callback,39,7
+Demopolis,2025,5,voice,67566,376
+Demopolis,2025,6,callback,37,3
+Demopolis,2025,6,message,2759,7
+Demopolis,2025,6,voice,67041,312
+Demopolis,2025,7,callback,10,2
+Demopolis,2025,7,voice,44455,248
+Demopolis,2025,8,callback,5,1
+Demopolis,2025,8,message,1714,8
+Demopolis,2025,8,voice,52100,222
+Demopolis,2025,9,callback,26,3
+Demopolis,2025,9,message,774,5
+Demopolis,2025,9,voice,57574,274
+Demopolis,2025,10,callback,12,2
+Demopolis,2025,10,message,161,3
+Demopolis,2025,10,voice,60273,245
+Demopolis,2025,11,message,5,1
+Demopolis,2025,11,voice,57600,306
+Demopolis,2025,12,callback,48,1
+Demopolis,2025,12,message,181,1
+Demopolis,2025,12,voice,40988,269
+Demopolis,2026,1,callback,162,3
+Demopolis,2026,1,message,345,3
+Demopolis,2026,1,voice,39136,219
+Demopolis,2026,2,callback,4,1
+Demopolis,2026,2,message,483,3
+Demopolis,2026,2,voice,57776,316
+Demopolis,2026,3,callback,23,4
+Demopolis,2026,3,message,821,6
+Demopolis,2026,3,voice,86543,443
+Demopolis,2026,4,callback,5,1
+Demopolis,2026,4,message,293,3
+Demopolis,2026,4,voice,49463,262
+Dothan,2025,5,voice,347767,2265
+Dothan,2025,6,voice,316962,2306
+Dothan,2025,7,voice,258309,2386
+Dothan,2025,8,voice,253304,2310
+Dothan,2025,9,voice,224727,2208
+Dothan,2025,10,voice,262980,2407
+Dothan,2025,11,voice,212990,2008
+Dothan,2025,12,callback,25,4
+Dothan,2025,12,voice,189250,1739
+Dothan,2026,1,callback,171,3
+Dothan,2026,1,voice,217736,1836
+Dothan,2026,2,callback,91,6
+Dothan,2026,2,voice,209501,1870
+Dothan,2026,3,callback,242,14
+Dothan,2026,3,voice,263275,2291
+Dothan,2026,4,callback,23,3
+Dothan,2026,4,voice,211304,1840
+East TN,2025,5,callback,17,2
+East TN,2025,5,voice,144920,1986
+East TN,2025,6,callback,29,2
+East TN,2025,6,voice,163643,2092
+East TN,2025,7,callback,87,3
+East TN,2025,7,voice,162513,1942
+East TN,2025,8,callback,8,1
+East TN,2025,8,voice,133167,1659
+East TN,2025,9,callback,23,4
+East TN,2025,9,voice,240950,2674
+East TN,2025,10,callback,349,17
+East TN,2025,10,voice,546646,4876
+East TN,2025,11,callback,289,16
+East TN,2025,11,voice,457978,4091
+East TN,2025,12,callback,249,20
+East TN,2025,12,voice,477488,4330
+East TN,2026,1,callback,292,23
+East TN,2026,1,voice,475132,4475
+East TN,2026,2,callback,480,36
+East TN,2026,2,voice,439627,4157
+East TN,2026,3,callback,248,23
+East TN,2026,3,voice,578440,5570
+East TN,2026,4,callback,528,20
+East TN,2026,4,voice,628542,5690
+Foley,2025,5,callback,172,3
+Foley,2025,5,voice,265260,1833
+Foley,2025,6,callback,492,9
+Foley,2025,6,voice,252348,1840
+Foley,2025,7,callback,157,2
+Foley,2025,7,voice,259001,1777
+Foley,2025,8,callback,73,3
+Foley,2025,8,voice,259297,1778
+Foley,2025,9,callback,13,2
+Foley,2025,9,voice,281515,1992
+Foley,2025,10,callback,27,4
+Foley,2025,10,voice,262727,1935
+Foley,2025,11,callback,13,2
+Foley,2025,11,voice,188755,1661
+Foley,2025,12,callback,180,5
+Foley,2025,12,voice,173688,1536
+Foley,2026,1,callback,18,2
+Foley,2026,1,voice,190442,1740
+Foley,2026,2,callback,23,3
+Foley,2026,2,voice,210858,1777
+Foley,2026,3,callback,211,3
+Foley,2026,3,voice,291868,2236
+Foley,2026,4,callback,97,5
+Foley,2026,4,voice,238564,1775
+Houston,2025,5,email,915,8
+Houston,2025,5,message,373895,1004
+Houston,2025,5,voice,2112682,10745
+Houston,2025,6,callback,13,2
+Houston,2025,6,message,337041,855
+Houston,2025,6,voice,2044290,10808
+Houston,2025,7,callback,43,1
+Houston,2025,7,email,15,1
+Houston,2025,7,message,358548,853
+Houston,2025,7,voice,2142920,11344
+Houston,2025,8,callback,22,3
+Houston,2025,8,message,356997,783
+Houston,2025,8,voice,1966936,11355
+Houston,2025,9,email,29,3
+Houston,2025,9,message,177255,467
+Houston,2025,9,voice,1773890,11079
+Houston,2025,10,callback,1026,3
+Houston,2025,10,email,1311,12
+Houston,2025,10,message,154156,392
+Houston,2025,10,voice,1734400,10721
+Houston,2025,11,email,1296,15
+Houston,2025,11,message,123876,346
+Houston,2025,11,voice,1659459,9089
+Houston,2025,12,email,1128,6
+Houston,2025,12,message,138660,381
+Houston,2025,12,voice,1567124,9428
+Houston,2026,1,email,1110,9
+Houston,2026,1,message,163293,442
+Houston,2026,1,voice,1627709,9581
+Houston,2026,2,email,312,10
+Houston,2026,2,message,146152,484
+Houston,2026,2,voice,1774003,10722
+Houston,2026,3,email,214,2
+Houston,2026,3,message,170437,598
+Houston,2026,3,voice,1754726,11076
+Houston,2026,4,email,307,6
+Houston,2026,4,message,149164,579
+Houston,2026,4,voice,1414549,8983
+Jupiter,2025,5,callback,6369,32
+Jupiter,2025,5,email,206196,1347
+Jupiter,2025,5,message,234779,638
+Jupiter,2025,5,voice,3308123,17223
+Jupiter,2025,6,callback,469,10
+Jupiter,2025,6,email,159311,1222
+Jupiter,2025,6,message,168220,486
+Jupiter,2025,6,voice,2226690,10926
+Jupiter,2025,7,callback,24,3
+Jupiter,2025,7,email,139038,1158
+Jupiter,2025,7,message,192666,546
+Jupiter,2025,7,voice,2202726,10784
+Jupiter,2025,8,email,104315,1045
+Jupiter,2025,8,message,151822,435
+Jupiter,2025,8,voice,2191943,10307
+Jupiter,2025,9,email,99397,967
+Jupiter,2025,9,message,146641,447
+Jupiter,2025,9,voice,1954994,10072
+Jupiter,2025,10,callback,1788,5
+Jupiter,2025,10,email,120203,1091
+Jupiter,2025,10,message,165085,598
+Jupiter,2025,10,voice,2010028,10718
+Jupiter,2025,11,callback,111,1
+Jupiter,2025,11,email,104491,949
+Jupiter,2025,11,message,136812,435
+Jupiter,2025,11,voice,1490113,8321
+Jupiter,2025,12,callback,443,5
+Jupiter,2025,12,email,109370,1245
+Jupiter,2025,12,message,132142,481
+Jupiter,2025,12,voice,1466856,8689
+Jupiter,2026,1,callback,26,3
+Jupiter,2026,1,email,115945,1208
+Jupiter,2026,1,message,140604,449
+Jupiter,2026,1,voice,1563142,8911
+Jupiter,2026,2,callback,1260,4
+Jupiter,2026,2,email,23605,879
+Jupiter,2026,2,message,137568,438
+Jupiter,2026,2,voice,1315384,8275
+Jupiter,2026,3,callback,4,1
+Jupiter,2026,3,email,34971,1017
+Jupiter,2026,3,message,127091,490
+Jupiter,2026,3,voice,1590477,9214
+Jupiter,2026,4,email,26864,796
+Jupiter,2026,4,message,131943,511
+Jupiter,2026,4,voice,1334072,8607
+Miami,2025,5,email,13225,167
+Miami,2025,5,message,574,6
+Miami,2025,5,voice,939754,6084
+Miami,2025,6,email,28822,175
+Miami,2025,6,message,109,1
+Miami,2025,6,voice,973516,5905
+Miami,2025,7,email,22446,234
+Miami,2025,7,message,1832,9
+Miami,2025,7,voice,887221,6053
+Miami,2025,8,email,9178,156
+Miami,2025,8,message,1491,9
+Miami,2025,8,voice,768376,5242
+Miami,2025,9,callback,1348,1
+Miami,2025,9,email,10877,113
+Miami,2025,9,message,467,9
+Miami,2025,9,voice,703877,4763
+Miami,2025,10,email,9744,111
+Miami,2025,10,message,117,4
+Miami,2025,10,voice,819040,5334
+Miami,2025,11,callback,2189,1
+Miami,2025,11,email,9519,98
+Miami,2025,11,message,514,7
+Miami,2025,11,voice,699822,4452
+Miami,2025,12,email,5186,76
+Miami,2025,12,message,690,5
+Miami,2025,12,voice,698818,4502
+Miami,2026,1,callback,1986,3
+Miami,2026,1,email,7386,66
+Miami,2026,1,message,841,6
+Miami,2026,1,voice,757430,4340
+Miami,2026,2,email,2989,44
+Miami,2026,2,message,164,4
+Miami,2026,2,voice,813598,4580
+Miami,2026,3,callback,36,1
+Miami,2026,3,email,5597,97
+Miami,2026,3,message,1125,11
+Miami,2026,3,voice,998653,5138
+Miami,2026,4,email,3988,63
+Miami,2026,4,message,4621,14
+Miami,2026,4,voice,939654,5008
+North AL,2025,5,callback,92,1
+North AL,2025,5,email,19341,183
+North AL,2025,5,voice,569482,4620
+North AL,2025,6,callback,39,5
+North AL,2025,6,email,26896,249
+North AL,2025,6,voice,682342,5430
+North AL,2025,7,callback,20,3
+North AL,2025,7,email,14440,213
+North AL,2025,7,voice,688715,5307
+North AL,2025,8,callback,113,3
+North AL,2025,8,email,11459,233
+North AL,2025,8,voice,620082,4690
+North AL,2025,9,callback,15,2
+North AL,2025,9,email,9785,168
+North AL,2025,9,voice,565215,4340
+North AL,2025,10,callback,26,4
+North AL,2025,10,email,13800,237
+North AL,2025,10,voice,596133,4580
+North AL,2025,11,callback,130,14
+North AL,2025,11,email,10392,171
+North AL,2025,11,voice,626336,4522
+North AL,2025,12,callback,271,25
+North AL,2025,12,email,5607,103
+North AL,2025,12,voice,488639,3646
+North AL,2026,1,callback,174,11
+North AL,2026,1,email,8263,110
+North AL,2026,1,voice,419444,3134
+North AL,2026,2,callback,45,6
+North AL,2026,2,email,4228,104
+North AL,2026,2,voice,522964,3944
+North AL,2026,3,callback,446,23
+North AL,2026,3,email,10016,181
+North AL,2026,3,voice,657680,4730
+North AL,2026,4,callback,147,8
+North AL,2026,4,email,6748,193
+North AL,2026,4,voice,543976,4047
+North CA,2025,5,callback,609,57
+North CA,2025,5,email,31997,129
+North CA,2025,5,message,90313,779
+North CA,2025,5,voice,2189903,13284
+North CA,2025,6,callback,226,37
+North CA,2025,6,email,28747,102
+North CA,2025,6,message,77277,704
+North CA,2025,6,voice,2185613,13472
+North CA,2025,7,callback,221,26
+North CA,2025,7,email,40754,133
+North CA,2025,7,message,122661,727
+North CA,2025,7,voice,2380153,14059
+North CA,2025,8,callback,291,20
+North CA,2025,8,email,23510,92
+North CA,2025,8,message,162063,911
+North CA,2025,8,voice,2493825,13696
+North CA,2025,9,callback,9,1
+North CA,2025,9,email,40910,147
+North CA,2025,9,message,196407,941
+North CA,2025,9,voice,2537976,13543
+North CA,2025,10,callback,771,9
+North CA,2025,10,email,34264,126
+North CA,2025,10,message,179581,1078
+North CA,2025,10,voice,2740399,14711
+North CA,2025,11,email,22171,93
+North CA,2025,11,message,121731,859
+North CA,2025,11,voice,1872741,10479
+North CA,2025,12,callback,17,1
+North CA,2025,12,email,18760,88
+North CA,2025,12,message,151889,1062
+North CA,2025,12,voice,2088567,11228
+North CA,2026,1,callback,16,2
+North CA,2026,1,email,23220,124
+North CA,2026,1,message,163312,931
+North CA,2026,1,voice,1920881,10830
+North CA,2026,2,callback,8,1
+North CA,2026,2,email,28698,104
+North CA,2026,2,message,162486,976
+North CA,2026,2,voice,1681178,9601
+North CA,2026,3,callback,993,1
+North CA,2026,3,email,18627,106
+North CA,2026,3,message,147503,978
+North CA,2026,3,voice,2034045,11300
+North CA,2026,4,callback,159,2
+North CA,2026,4,email,25530,105
+North CA,2026,4,message,137465,909
+North CA,2026,4,voice,1892529,10510
+Opelika,2025,5,callback,7,1
+Opelika,2025,5,voice,355424,3054
+Opelika,2025,6,voice,416942,3523
+Opelika,2025,7,voice,435034,3694
+Opelika,2025,8,callback,8,1
+Opelika,2025,8,voice,380372,3520
+Opelika,2025,9,callback,18,1
+Opelika,2025,9,voice,480131,4006
+Opelika,2025,10,callback,214,11
+Opelika,2025,10,voice,431670,3650
+Opelika,2025,11,voice,356090,2972
+Opelika,2025,12,callback,439,11
+Opelika,2025,12,voice,448627,3450
+Opelika,2026,1,callback,151,17
+Opelika,2026,1,voice,448837,3602
+Opelika,2026,2,callback,213,24
+Opelika,2026,2,voice,436838,3646
+Opelika,2026,3,callback,128,10
+Opelika,2026,3,voice,355262,3846
+Opelika,2026,4,callback,318,11
+Opelika,2026,4,voice,269512,2934
+Orlando,2025,5,callback,280,19
+Orlando,2025,5,email,54395,540
+Orlando,2025,5,message,17751,110
+Orlando,2025,5,voice,1138481,7411
+Orlando,2025,6,callback,978,90
+Orlando,2025,6,email,64521,565
+Orlando,2025,6,message,23518,139
+Orlando,2025,6,voice,1337646,8035
+Orlando,2025,7,callback,353,31
+Orlando,2025,7,email,75273,539
+Orlando,2025,7,message,67264,320
+Orlando,2025,7,voice,1261222,8106
+Orlando,2025,8,callback,132,3
+Orlando,2025,8,email,66554,512
+Orlando,2025,8,message,71949,276
+Orlando,2025,8,voice,1073753,6709
+Orlando,2025,9,email,61375,434
+Orlando,2025,9,message,80581,289
+Orlando,2025,9,voice,1062549,7161
+Orlando,2025,10,callback,1682,4
+Orlando,2025,10,email,61359,456
+Orlando,2025,10,message,134521,385
+Orlando,2025,10,voice,1144165,7608
+Orlando,2025,11,email,61512,358
+Orlando,2025,11,message,128114,327
+Orlando,2025,11,voice,949382,5873
+Orlando,2025,12,callback,481,4
+Orlando,2025,12,email,55587,365
+Orlando,2025,12,message,132839,327
+Orlando,2025,12,voice,967837,5949
+Orlando,2026,1,callback,390,1
+Orlando,2026,1,email,90020,387
+Orlando,2026,1,message,182000,416
+Orlando,2026,1,voice,1036678,6698
+Orlando,2026,2,message,160059,367
+Orlando,2026,2,voice,1064543,6511
+Orlando,2026,3,callback,76,1
+Orlando,2026,3,message,163836,432
+Orlando,2026,3,voice,1168220,7265
+Orlando,2026,4,callback,298,2
+Orlando,2026,4,message,178260,402
+Orlando,2026,4,voice,961740,6118
+Panama City,2025,5,callback,7,1
+Panama City,2025,5,voice,269031,2140
+Panama City,2025,6,callback,176,4
+Panama City,2025,6,voice,255630,2131
+Panama City,2025,7,callback,17,3
+Panama City,2025,7,voice,226917,2324
+Panama City,2025,8,callback,32,5
+Panama City,2025,8,voice,225254,2330
+Panama City,2025,9,callback,38,6
+Panama City,2025,9,voice,219139,2180
+Panama City,2025,10,callback,204,9
+Panama City,2025,10,voice,242979,2386
+Panama City,2025,11,callback,22,4
+Panama City,2025,11,voice,176658,1821
+Panama City,2025,12,callback,19,3
+Panama City,2025,12,voice,197939,2018
+Panama City,2026,1,callback,21,3
+Panama City,2026,1,voice,197433,2008
+Panama City,2026,2,callback,38,6
+Panama City,2026,2,voice,221549,2226
+Panama City,2026,3,callback,16,3
+Panama City,2026,3,voice,237979,2492
+Panama City,2026,4,callback,37,6
+Panama City,2026,4,voice,189388,2065
+Reno,2025,5,voice,265706,1842
+Reno,2025,6,voice,250945,1936
+Reno,2025,7,voice,238012,1971
+Reno,2025,8,voice,219883,2049
+Reno,2025,9,voice,216173,1964
+Reno,2025,10,voice,232871,2193
+Reno,2025,11,voice,207551,1815
+Reno,2025,12,voice,132358,1289
+Reno,2026,1,voice,151087,1453
+Reno,2026,2,voice,132466,1309
+Reno,2026,3,voice,194670,1965
+Reno,2026,4,voice,196512,1826
+San Antonio,2025,5,voice,329492,2568
+San Antonio,2025,6,voice,422602,3117
+San Antonio,2025,7,voice,471907,3376
+San Antonio,2025,8,callback,6,1
+San Antonio,2025,8,voice,379130,2756
+San Antonio,2025,9,callback,9,1
+San Antonio,2025,9,voice,360507,2609
+San Antonio,2025,10,callback,151,1
+San Antonio,2025,10,voice,395019,3198
+San Antonio,2025,11,voice,79172,689
+San Antonio,2025,12,voice,69802,699
+San Antonio,2026,1,voice,61376,651
+San Antonio,2026,2,voice,69734,662
+San Antonio,2026,3,voice,55833,629
+San Antonio,2026,4,voice,45123,407
+Scottsdale (Southwest),2025,5,callback,12,2
+Scottsdale (Southwest),2025,5,email,267,2
+Scottsdale (Southwest),2025,5,message,24343,198
+Scottsdale (Southwest),2025,5,voice,1573212,6085
+Scottsdale (Southwest),2025,6,message,23648,201
+Scottsdale (Southwest),2025,6,voice,1558099,6267
+Scottsdale (Southwest),2025,7,message,17016,115
+Scottsdale (Southwest),2025,7,voice,1771003,6650
+Scottsdale (Southwest),2025,8,message,18281,106
+Scottsdale (Southwest),2025,8,voice,1455060,5495
+Scottsdale (Southwest),2025,9,callback,66,1
+Scottsdale (Southwest),2025,9,message,50971,226
+Scottsdale (Southwest),2025,9,voice,1431053,5683
+Scottsdale (Southwest),2025,10,callback,91,1
+Scottsdale (Southwest),2025,10,email,311,1
+Scottsdale (Southwest),2025,10,message,26983,164
+Scottsdale (Southwest),2025,10,voice,1593289,7009
+Scottsdale (Southwest),2025,11,message,26188,197
+Scottsdale (Southwest),2025,11,voice,1230701,5351
+Scottsdale (Southwest),2025,12,callback,132,2
+Scottsdale (Southwest),2025,12,message,23401,172
+Scottsdale (Southwest),2025,12,voice,1430007,5472
+Scottsdale (Southwest),2026,1,message,35266,182
+Scottsdale (Southwest),2026,1,voice,1424061,5555
+Scottsdale (Southwest),2026,2,callback,865,1
+Scottsdale (Southwest),2026,2,message,46064,193
+Scottsdale (Southwest),2026,2,voice,1370088,5405
+Scottsdale (Southwest),2026,3,message,44076,146
+Scottsdale (Southwest),2026,3,voice,1542092,6208
+Scottsdale (Southwest),2026,4,callback,16,1
+Scottsdale (Southwest),2026,4,message,51018,182
+Scottsdale (Southwest),2026,4,voice,1447047,5442
+South CA,2025,5,callback,58,1
+South CA,2025,5,email,21801,301
+South CA,2025,5,message,334498,1371
+South CA,2025,5,voice,1624719,9300
+South CA,2025,6,callback,11,1
+South CA,2025,6,email,10886,177
+South CA,2025,6,message,387012,1569
+South CA,2025,6,voice,1558479,8794
+South CA,2025,7,email,15723,166
+South CA,2025,7,message,463300,1889
+South CA,2025,7,voice,1858695,10617
+South CA,2025,8,email,16113,139
+South CA,2025,8,message,386003,1523
+South CA,2025,8,voice,1836666,10114
+South CA,2025,9,email,11265,131
+South CA,2025,9,message,377665,1580
+South CA,2025,9,voice,1832557,10057
+South CA,2025,10,callback,4728,6
+South CA,2025,10,email,18933,130
+South CA,2025,10,message,457692,1808
+South CA,2025,10,voice,1919998,10170
+South CA,2025,11,email,19628,101
+South CA,2025,11,message,256598,969
+South CA,2025,11,voice,1358258,6873
+South CA,2025,12,email,14130,83
+South CA,2025,12,message,339399,1408
+South CA,2025,12,voice,1825963,9737
+South CA,2026,1,callback,203,1
+South CA,2026,1,email,30808,133
+South CA,2026,1,message,331573,1422
+South CA,2026,1,voice,1787110,9336
+South CA,2026,2,email,22065,105
+South CA,2026,2,message,292996,1212
+South CA,2026,2,voice,1491052,8159
+South CA,2026,3,callback,961,1
+South CA,2026,3,email,8047,58
+South CA,2026,3,message,338366,1316
+South CA,2026,3,voice,1912143,10278
+South CA,2026,4,email,2744,15
+South CA,2026,4,message,284656,1029
+South CA,2026,4,voice,1624013,8628
+Tampa,2025,5,callback,374,9
+Tampa,2025,5,email,716801,1316
+Tampa,2025,5,message,76879,642
+Tampa,2025,5,voice,1433152,8699
+Tampa,2025,6,callback,78,6
+Tampa,2025,6,email,739375,1412
+Tampa,2025,6,message,87494,816
+Tampa,2025,6,voice,1419362,8601
+Tampa,2025,7,callback,51,5
+Tampa,2025,7,email,686216,1164
+Tampa,2025,7,message,137950,820
+Tampa,2025,7,voice,1506901,8450
+Tampa,2025,8,callback,71,1
+Tampa,2025,8,email,775415,1252
+Tampa,2025,8,message,133314,1031
+Tampa,2025,8,voice,1408590,7481
+Tampa,2025,9,callback,32,1
+Tampa,2025,9,email,770217,1100
+Tampa,2025,9,message,84914,557
+Tampa,2025,9,voice,1407373,7925
+Tampa,2025,10,callback,1772,6
+Tampa,2025,10,email,846499,1129
+Tampa,2025,10,message,87644,637
+Tampa,2025,10,voice,1380222,8618
+Tampa,2025,11,callback,6,1
+Tampa,2025,11,email,452180,658
+Tampa,2025,11,message,62152,373
+Tampa,2025,11,voice,1102069,6952
+Tampa,2025,12,callback,387,2
+Tampa,2025,12,email,479805,985
+Tampa,2025,12,message,108734,614
+Tampa,2025,12,voice,1231197,7487
+Tampa,2026,1,callback,107,2
+Tampa,2026,1,email,780372,1075
+Tampa,2026,1,message,106117,691
+Tampa,2026,1,voice,1379338,8090
+Tampa,2026,2,callback,2184,7
+Tampa,2026,2,email,950453,1263
+Tampa,2026,2,message,125116,750
+Tampa,2026,2,voice,1282685,7996
+Tampa,2026,3,callback,317,3
+Tampa,2026,3,email,993130,1449
+Tampa,2026,3,message,116217,634
+Tampa,2026,3,voice,1412066,8460
+Tampa,2026,4,email,983512,1282
+Tampa,2026,4,message,126965,617
+Tampa,2026,4,voice,1357839,7768
