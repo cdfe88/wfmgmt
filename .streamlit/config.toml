@@ -373,16 +373,16 @@
 # base =
 
 # Primary accent color.
-# primaryColor =
+# primaryColor ="#0000b3"
 
 # Background color of the app.
-# backgroundColor =
+# backgroundColor ="#3d3d3d"
 
 # Background color used for most interactive widgets.
-# secondaryBackgroundColor =
+# secondaryBackgroundColor ="#808080"
 
 # Color used for almost all text.
-# textColor =
+# textColor ="#ffffff"
 
 # Red color used in the basic color palette.
 # 
