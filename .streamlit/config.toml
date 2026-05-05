@@ -376,7 +376,7 @@ base = "dark"
 primaryColor ="#8ad0f4"
 
 # Background color of the app.
-backgroundColor ="#3d3d3d"
+backgroundColor ="#00003d"
 
 # Background color used for most interactive widgets.
 secondaryBackgroundColor ="#808080"
