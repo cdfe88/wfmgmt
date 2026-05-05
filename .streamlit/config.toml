@@ -857,7 +857,7 @@ textColor ="#ffffff"
 # "#6d3fc0", # purple80
 # "#d5dae5", # gray40
 # ]
-chartCategoricalColors = ["#398ef4","#00a4f6","#8799ff","#cf86f1","#ff74c8","#ff7292","#ff865a","#eea525","#b6c100","#ffb000"]
+chartCategoricalColors = ["#0000b3","#005c4c","#9f3c00","#909600","#683cc8","#00a0ae","#398ef4","#ff4830","#ffb000","#9a4cf5"]
 
 # An array of ten colors to use for sequential or continuous chart data.
 # 

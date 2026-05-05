@@ -399,7 +399,7 @@ if __name__ == '__main__':
                     st.write('Weekly Order Creation Distribution')
                     st.table(ords)
                     st.space('large')
-                    fig=px.bar(ord[['Historic Values','Projected Values']].T,color_discrete_sequence=px.colors.qualitative.G10,labels={'index':'Scenario','value':'Orders','variable':'Creation type'})
+                    fig=px.bar(ord[['Historic Values','Projected Values']].T,labels={'index':'Scenario','value':'Orders','variable':'Creation type'})
                     st.plotly_chart(fig)
                 with col2:
                     h2={'Digital Order Creation': (dig_auto*h['Digital (Confirmed)']+dig_rev*h['Digital (In Review)'])/3600,
@@ -423,7 +423,7 @@ if __name__ == '__main__':
                     ord3['% Change']=(ord3['Projected']-ord3['Historic'])/ord3['Historic']
                     ords3=ord3.style.format({"Historic": "{:,.0f}","Projected": "{:,.0f}", "% Change": "{:.1%}"})
                     st.table(ords3)
-                    fig2=px.bar(ord2[['Historic Values','Projected Values']].T,color_discrete_sequence=px.colors.qualitative.G10,labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity'})
+                    fig2=px.bar(ord2[['Historic Values','Projected Values']].T,labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity'})
                     st.plotly_chart(fig2)
         with tab2:
             hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff,sl,max_util)
