@@ -7,6 +7,11 @@ from pprint import PrettyPrinter
 from datetime import date, datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
+from streamlit_js_eval import streamlit_js_eval
+
+
+
+
 
 def workload_ini():
     wload = pd.read_csv('workload.csv')
@@ -37,11 +42,11 @@ def workload_ini():
     return wload
 
 def workload_agg(wload):
-    wload['W Mgmt'] = wload['Order Mgmt HT (hr)'] * wload['Occur Int']
-    wload['W Int'] = wload['Order Mgmt Interactions'] * wload['Occur Int']
-    wload['W Ord'] = wload['Orders'] * wload['Occur Ord']
-    wload['W Ana'] = wload['Analog'] * wload['Occur Ord']
-    wload['W Dig'] = wload['Digital'] * wload['Occur Ord']
+    wload['W Mgmt'] = wload['Order Mgmt HT (hr)'] * wload['Occur Int'] / wload['count']
+    wload['W Int'] = wload['Order Mgmt Interactions'] * wload['Occur Int'] / wload['count']
+    wload['W Ord'] = wload['Orders'] * wload['Occur Ord'] / wload['count']
+    wload['W Ana'] = wload['Analog'] * wload['Occur Ord'] / wload['count']
+    wload['W Dig'] = wload['Digital'] * wload['Occur Ord'] / wload['count']
     agru1=wload.groupby(['ADay','AHour'])[['Order Mgmt HT (hr)','Order Mgmt Interactions','W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
     #agru = wload.groupby('Market')[['W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
     #wload = pd.merge(wload, agru, on='Market', how='left')
@@ -115,8 +120,9 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand['positions']=demand['positions'].astype('Int64')
     demand['raw_positions']=demand['raw_positions'].astype('Int64')
     demand['shrink_delta']=demand['positions']-demand['raw_positions']
-    demand['dig delta']=demand['Digital WL']-eff*(demand['positions']-demand['Analog WL'])
+    demand['dig delta']=demand['Digital WL']-effectivity*(demand['positions']-demand['Analog WL'])
     demand=demand.drop(['ErlangC','Interactions','AHT','ASA','Reqs'],axis=1)
+    demand=demand.fillna(0)
     c=0
     res=np.zeros(len(demand['dig delta']))
     for i,value in enumerate(demand['dig delta']):
@@ -230,13 +236,20 @@ if __name__ == '__main__':
         chosen_mkts=st.multiselect('Market(s):', avail_mkt)
         date_range=st.slider(label="Historic Data Date Range",min_value=min(work['Date']),max_value=max(work['Date']),value=(min(work['Date']),max(work['Date'])),format="MMM/YY",key='date_range')
         summ = pd.read_csv('summary.csv')
-        summ['Date']= summ.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)  
+        summ['Date']= summ.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)
+        media=pd.read_csv('media_types.csv',header=0)
+        media['Date']= media.apply(lambda row: date(row['YEAR'],row['MONTH'],1),axis=1)  
         if len(chosen_mkts)==0:
             work_fil=work[work['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
             summ_fil=summ[summ['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
+            media_fil=media[media['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
         else:
             work_fil=work[work['Market'].isin(chosen_mkts) & work['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
             summ_fil=summ[summ['Market'].isin(chosen_mkts) & summ['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
+            media_fil=media[media['Market'].isin(chosen_mkts) & media['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
+        media_fil=media_fil.groupby('Media Type')[['Handle Time (seconds)','Interactions']].sum()
+        media_fil['ht_pct']= (media_fil['Handle Time (seconds)'] / media_fil['Handle Time (seconds)'].sum())
+        media_fil['int_pct']= (media_fil['Interactions'] / media_fil['Interactions'].sum())
         tz=st.pills("Choose Grouping Time Zone" if len(work_fil['Time Zone'].unique())>1 else "Time Zone",work_fil['Time Zone'].unique(),selection_mode='single',default=work_fil['Time Zone'].unique()[0])
         work_fil['TDelta']=work_fil.apply(lambda row: timezones.index(tz)-timezones.index(row['Time Zone']),axis=1)
         work_fil['t_align']=work_fil.apply(lambda row: datetime.combine(date.today(),row['Hour'])+timedelta(hours=row['TDelta']),axis=1)
@@ -246,28 +259,112 @@ if __name__ == '__main__':
         work_sum['ADay']=pd.Categorical(work_sum['ADay'], categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
         work_sum=work_sum.sort_values(['ADay','AHour']).reset_index()
         historic=historic_time(summ_fil)
-        with st.expander("Tunable Parameters",expanded=True):
-            col1, col2=st.columns([0.5,0.5])
-            with col1:
+        #st.dataframe(historic)
+        proj_param={}
+        st.header('Tunable Parameters')
+        with st.container(border=False):
+            with st.expander("Service Center Speed Benchmarks",expanded=True):
                 st.write("Order Processing Times (sec)")
-                dig_auto=st.number_input("Self-service orders",value=15,min_value=0,format='%i')
-                dig_rev=st.number_input("Orders in Review",value=135,min_value=0,format='%i')
-            with col2:    
-                st.write("Target Speed of Answer")
-                col4,col5=st.columns(2)
+                col1,col2=st.columns([0.8,1])
+                with col1:
+                    dig_auto_num=st.number_input("CXGO Confirmed",value=15,min_value=0,format='%i', help='Time required to process an order placed through CXGO with DCO confirmation.')
+                with col2:
+                    dig_auto_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='sec',required=True,key='d_aut')
+                col3,col4=st.columns([0.8,1])
+                with col3:
+                    dig_rev_num=st.number_input("CXGO Review",value=135,min_value=0,format='%i', help='Time required to process an order placed through CXGO without DCO confirmation.')
                 with col4:
-                    asa_v=st.number_input("Analog:",value=40.0,min_value=0.1)
-                    asad_v=st.number_input("Online:",value=24.0,min_value=0.1)
-                with col5:
-                    asa_u=st.selectbox("",['sec','min','hr'],index=0)
-                    asad_u=st.selectbox("",['sec','min','hr'],index=2)
-                match asa_u:
+                    dig_rev_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='sec',required=True,key='d_rev')
+                col17,col18=st.columns([0.8,1])
+                with col17:
+                    ana_rev_num=st.number_input("Analog Review",value=135,min_value=0,format='%i', help='After Call Work required to process an Analog Order created in Review.')
+                with col18:
+                    ana_rev_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='sec',required=True,key='a_rev')
+                match dig_auto_u:
                     case 'sec':
-                        asa=asa_v/60
+                        dig_auto=dig_auto_num
                     case 'min':
-                        asa=asa_v
+                        dig_auto=dig_auto_num*60
                     case 'hr':
-                        asa=asa_v*60
+                        dig_auto=dig_auto_num*3600
+                match dig_rev_u:
+                    case 'sec':
+                        dig_rev=dig_rev_num
+                    case 'min':
+                        dig_rev=dig_rev_num*60
+                    case 'hr':
+                        dig_rev=dig_rev_num*3600
+                match ana_rev_u:
+                    case 'sec':
+                        ana_rev=ana_rev_num
+                    case 'min':
+                        ana_rev=ana_rev_num*60
+                    case 'hr':
+                        ana_rev=ana_rev_num*3600
+                st.divider()
+                st.write("Target Order Request Response Times")
+                col5,col6=st.columns([0.8,1])
+                with col5:
+                    asa_voice_v=st.number_input("Call (voice):",value=1.0,min_value=0.1,help='Target Speed of Answer for Media Type: voice.')
+                with col6:
+                    asa_voice_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='min',required=True,key='avu')
+
+                col7,col8=st.columns([0.8,1])
+                with col7:
+                    asa_callback_v=st.number_input("Callback:",value=5.0,min_value=0.1,help='Target Speed of Answer for Media Type: callback.')
+                with col8:
+                    asa_callback_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='min',required=True,key='acu')
+
+                col9,col10=st.columns([0.8,1])
+                with col9:
+                    asa_message_v=st.number_input("Message:",value=1.0,min_value=0.1,help='Target Speed of Answer for Media Type: message.')
+                with col10:
+                    asa_message_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='min',required=True,key='amu')
+
+                col11,col12=st.columns([0.8,1])
+                with col11:
+                    asa_email_v=st.number_input("Email:",value=1.0,min_value=0.1,help='Target Speed of Answer for Media Type: email.')
+                with col12:
+                    asa_email_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='hr',required=True,key='aeu')
+                
+                col13,col14=st.columns([0.8,1])
+                with col13:
+                    asad_v=st.number_input("Cemex Go:",value=24.0,min_value=0.1, help='Target Reponse time for orders placed through CXGO.')
+                with col14:
+                    asad_u=st.segmented_control(label="",options=['sec','min','hr'],selection_mode='single',default='hr',required=True,key='asad')
+                match asa_voice_u:
+                    case 'sec':
+                        asa_voice=asa_voice_v/60
+                    case 'min':
+                        asa_voice=asa_voice_v
+                    case 'hr':
+                        asa_voice=asa_voice_v*60
+                match asa_callback_u:
+                    case 'sec':
+                        asa_callback=asa_callback_v/60
+                    case 'min':
+                        asa_callback=asa_callback_v
+                    case 'hr':
+                        asa_callback=asa_callback_v*60
+                match asa_message_u:
+                    case 'sec':
+                        asa_message=asa_message_v/60
+                    case 'min':
+                        asa_message=asa_message_v
+                    case 'hr':
+                        asa_message=asa_message_v*60
+                match asa_email_u:
+                    case 'sec':
+                        asa_email=asa_email_v/60
+                    case 'min':
+                        asa_email=asa_email_v
+                    case 'hr':
+                        asa_email=asa_email_v*60    
+                
+                med=pd.DataFrame({'asa':[asa_callback,asa_email,asa_message,asa_voice]},index=['callback','email','message','voice'])
+                mf=media_fil.join(med)
+                mf['asa_av']=mf['asa']*mf['int_pct']
+                asa=mf['asa_av'].sum()
                 match asad_u:
                     case 'sec':
                         asad=asad_v/60
@@ -275,19 +372,14 @@ if __name__ == '__main__':
                         asad=asad_v
                     case 'hr':
                         asad=asad_v*60     
-            st.divider()
-            col6,col7,col8=st.columns(3)
-            with col6:
-                max_util=st.number_input("Max utilization (%):",value=95,min_value=0,max_value=100)/100
-            with col7:    
-                eff=st.number_input("Efficiency (%):",value=76,min_value=0,max_value=100)/100
-            with col8:    
-                sl=st.number_input("Service Level Target (%):",value=80,min_value=0,max_value=100)/100
-            
-    with colb:
-        proj_param={}
-        col1, col2=st.columns(2)
-        with col1:
+                st.divider()
+                col15,col16=st.columns(2)
+                with col15:
+                    sl=st.number_input("Service Level Target (%):",value=80,min_value=0,max_value=100)/100
+                    max_util=st.number_input("Max utilization (%):",value=95,min_value=0,max_value=100)/100
+                with col16:   
+                    eff=st.number_input("Efficiency (%):",value=76,min_value=0,max_value=100,help='Percentage of time dedicated by agents to Value-adding tasks. (1 - Shrinkage).')/100
+                    other_act=st.number_input("Other Activities (%):",value=0,min_value=0,max_value=50,help='Percentage of time dedicated by agents to Value-adding activities unrelated to Order Taking.')/100
             with st.expander("Order Creation Parameters"):
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
@@ -326,8 +418,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['auto_create']:.2%}")
                     with c3:
-                        proj_param['auto_create']=st.slider(label='',min_value=historic['auto_create'],max_value=1.0,value=historic['auto_create'],format="percent",key='p_auto')
-        with col2:
+                        proj_param['auto_create']=st.slider(label='',min_value=historic['auto_create'],max_value=1.0,value=historic['auto_create'],format="percent",key='p_auto')    
             with st.expander("Order Management Parameters"):
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
@@ -383,6 +474,7 @@ if __name__ == '__main__':
                         st.write(f"{historic['can_adoption']*historic['digitization_cancel']:.2%}")
                     with c3:
                         st.write(f"{proj_param['can_adoption']*historic['digitization_cancel']:.2%}")
+    with colb:
         tab1,tab2,tab3=st.tabs(["Weekly Workload","Hourly Workload","Optimal Scheduling"])
         with tab1:
             with st.container(border=False):
@@ -405,16 +497,19 @@ if __name__ == '__main__':
                     st.write('Weekly Order Creation Distribution')
                     st.table(ords)
                     st.space('large')
-                    fig=px.bar(ord[['Historic Values','Projected Values']].T,labels={'index':'Scenario','value':'Orders','variable':'Creation type'})
+                    ordx=ord[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
+                    ordx=ordx.reset_index(names=['Activity'])
+                    fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
+                    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
                     st.plotly_chart(fig)
                 with col2:
                     h2={'Digital Order Creation': (dig_auto*h['Digital (Confirmed)']+dig_rev*h['Digital (In Review)'])/3600,
-                        'Analog Order Creation': historic['ht_create_ana']*(h['Analog (Confirmed)']+h['Analog (In Review)'])/3600,
+                        'Analog Order Creation': (historic['ht_create_ana']*h['Analog (Confirmed)']+(historic['ht_create_ana']+ana_rev)*h['Analog (In Review)'])/3600,
                         'Order Modification': historic['peak']*historic['mod_rate']*(1-historic['mod_adoption']*historic['digitization_modify'])*historic['ht_modify']/3600,
                         'Order Cancellation': historic['peak']*historic['can_rate']*(1-historic['can_adoption']*historic['digitization_cancel'])*historic['ht_cancel']/3600,
                         'Misc. Order Management': historic['peak']*historic['ht_mgmt']/3600}
                     p2={'Digital Order Creation': (dig_auto*p['Digital (Confirmed)']+dig_rev*p['Digital (In Review)'])/3600,
-                        'Analog Order Creation': historic['ht_create_ana']*(p['Analog (Confirmed)']+p['Analog (In Review)'])/3600,
+                        'Analog Order Creation': (historic['ht_create_ana']*p['Analog (Confirmed)']+(historic['ht_create_ana']+ana_rev)*p['Analog (In Review)'])/3600,
                         'Order Modification': proj_param['peak']*proj_param['mod_rate']*(1-proj_param['mod_adoption']*historic['digitization_modify'])*historic['ht_modify']/3600,
                         'Order Cancellation': proj_param['peak']*proj_param['can_rate']*(1-proj_param['can_adoption']*historic['digitization_cancel'])*historic['ht_cancel']/3600,
                         'Misc. Order Management': proj_param['peak']*historic['ht_mgmt']/3600}
@@ -436,8 +531,8 @@ if __name__ == '__main__':
                     fig2=px.bar(ord5,x='Scenario',y='value',color='Activity',labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity','percentage_of_total':"% of Workload"},hover_data={'Activity': False,'Scenario': False,'value':':.1f','percentage_of_total':':.1%'})
                     st.plotly_chart(fig2)
         with tab2:
-            hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff,sl,max_util)
-            pdemand=intensity(work_sum,p,p2,summ_fil['Total Orders'].sum(),proj_param['peak'],asa, asad,eff,sl,max_util)
+            hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff-other_act,sl,max_util)
+            pdemand=intensity(work_sum,p,p2,summ_fil['Total Orders'].sum(),proj_param['peak'],asa, asad,eff-other_act,sl,max_util)
             h_wf,h_sch,h_r_sch=calculate_resources(hdemand)
             p_wf,p_sch,p_r_sch=calculate_resources(pdemand)
             col1,col2=st.columns([3,1])
