@@ -157,7 +157,7 @@ def create_demand_plot(dem1,dem2):
 
     figy.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['occupancy'], mode='lines+markers',name='Historic Data',line=dict(color='#0068c9', width=3)))
     figy.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['occupancy'], mode='lines+markers',name='Projection',line=dict(color="#9a9a9a", width=3,dash='dot')))
-    figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
+    figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", yaxis_tickformat=".0%", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
     
     figz.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032'),legendgroup='B',showlegend=True),row=1,col=1)
     figz.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=True),row=1,col=1)
