@@ -565,11 +565,13 @@ if __name__ == '__main__':
                 with t3:
                     st.plotly_chart(fig5,height='stretch')
             with col2:
-                twf=pd.merge(h_wf,p_wf,suffixes=('_h','_p'))
-                twf=twf.drop(['FTE (no shrinkage)','OT (no shrinkage)'])
-                t_wf=twf.melt(ignore_index=False,var_name='Scenario')
+                #twf=pd.merge(h_wf,p_wf,suffixes=('_h','_p'))
+                #twf=twf.drop(['FTE (no shrinkage)','OT (no shrinkage)'])
+                #t_wf=twf.melt(ignore_index=False,var_name='Scenario')
 
-                st.dataframe(t_wf.T)
+                #st.dataframe(t_wf.T)
+                st.dataframe(h_pf)
+                st.dataframe(p_wf)
         with tab3:
             col1,col2=st.columns(2)
             with col1:
