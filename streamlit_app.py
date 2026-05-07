@@ -145,7 +145,7 @@ def create_demand_plot(dem1,dem2):
         traceorder='normal',
         orientation="h",
         yanchor="bottom",
-        y=-1,
+        y=-0.2,
         xanchor="center",
         x=0.5
     ))
@@ -164,9 +164,10 @@ def create_demand_plot(dem1,dem2):
     figz.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032'),legendgroup='B',showlegend=False),row=2,col=1)
     figz.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=False),row=2,col=1)
     figz.update_layout(legend=dict(
+        traceorder='normal',
         orientation="h",
         yanchor="bottom",
-        y=-0.8,
+        y=-0.2,
         xanchor="center",
         x=0.5
     ))
