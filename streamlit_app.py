@@ -561,11 +561,11 @@ if __name__ == '__main__':
                 fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
                 t1,t2,t3=st.tabs(['Workload / HC','Agent Utilization','Digital Work Burndown'])
                 with t1:
-                    st.plotly_chart(fig3)
+                    st.plotly_chart(fig3,height='stretch')
                 with t2:
                     st.plotly_chart(fig4)
                 with t3:
-                    st.plotly_chart(fig5)
+                    st.plotly_chart(fig5,height='stretch')
             with col2:
                 st.write('Historical WF Requirements')    
                 st.dataframe(h_wf)
