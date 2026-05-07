@@ -137,10 +137,10 @@ def create_demand_plot(dem1,dem2):
     figy=go.Figure()
     figz=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload (hrs)")
     
-    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')),row=1,col=1,legendgroup='A',showlegend=True)
-    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')),row=1,col=1,legendgroup='A',showlegend=True)
-    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')),row=2,col=1,legendgroup='A',showlegend=False)
-    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')),row=2,col=1,legendgroup='A',showlegend=False)
+    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9'),legendgroup='A',showlegend=True),row=1,col=1)
+    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff'),legendgroup='A',showlegend=True),row=1,col=1)
+    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9'),legendgroup='A',showlegend=False),row=2,col=1)
+    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff'),legendgroup='A',showlegend=False),row=2,col=1)
     figx.update_layout(barmode='stack',legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -148,20 +148,20 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
-    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload'),row=1,col=1,legendgroup='A',showlegend=True)
-    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload'),row=1,col=1,legendgroup='A',showlegend=True)
-    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload'),row=2,col=1,legendgroup='A',showlegend=False)
-    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload'),row=2,col=1,legendgroup='A',showlegend=False)
+    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=True),row=1,col=1)
+    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload',legendgroup='A',showlegend=True),row=1,col=1)
+    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=False),row=2,col=1)
+    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload',legendgroup='A',showlegend=False),row=2,col=1)
 
 
     figy.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['occupancy'], mode='lines+markers',name='Historic Data',line=dict(color='#0068c9', width=3)))
     figy.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['occupancy'], mode='lines+markers',name='Projection',line=dict(color="#9a9a9a", width=3,dash='dot')))
     figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
     
-    figz.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032')),row=1,col=1,legendgroup='B',showlegend=True)
-    figz.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3)),row=1,col=1,legendgroup='B',showlegend=True)
-    figz.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032')),row=2,col=1,legendgroup='B',showlegend=False)
-    figz.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3)),row=2,col=1,legendgroup='B',showlegend=False)
+    figz.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032'),legendgroup='B',showlegend=True),row=1,col=1)
+    figz.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=True),row=1,col=1)
+    figz.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032'),legendgroup='B',showlegend=False),row=2,col=1)
+    figz.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=False),row=2,col=1)
     figz.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
