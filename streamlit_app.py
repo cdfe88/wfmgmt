@@ -144,6 +144,7 @@ def create_demand_plot(dem1,dem2):
     figx.update_layout(barmode='stack',legend=dict(
         orientation="h",
         yanchor="bottom",
+        yref="container",
         y=-0.5,
         xanchor="center",
         x=0.5
@@ -165,6 +166,7 @@ def create_demand_plot(dem1,dem2):
     figz.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
+        yref='containter',
         y=-0.5,
         xanchor="center",
         x=0.5
