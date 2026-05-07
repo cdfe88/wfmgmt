@@ -149,6 +149,7 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
+    figx.update_yaxes(autorange=False)
     figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=True),row=1,col=1)
     figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload',legendgroup='A',showlegend=True),row=1,col=1)
     figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=False),row=2,col=1)
@@ -171,6 +172,7 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
+    figz.update_yaxes(autorange=False)
     return figx,figy,figz
 
 def calculate_resources(demand):
