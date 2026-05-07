@@ -499,9 +499,7 @@ if __name__ == '__main__':
                     st.space('large')
                     ordx=ord[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ordx=ordx.reset_index(names=['Activity'])
-                    fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
-                    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-                    st.plotly_chart(fig)
+                    
                 with col2:
                     h2={'Digital Order Creation': (dig_auto*h['Digital (Confirmed)']+dig_rev*h['Digital (In Review)'])/3600,
                         'Analog Order Creation': (historic['ht_create_ana']*h['Analog (Confirmed)']+(historic['ht_create_ana']+ana_rev)*h['Analog (In Review)'])/3600,
@@ -528,8 +526,17 @@ if __name__ == '__main__':
                     ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ord5=ord5.reset_index(names=['Activity'])
                     ord5['percentage_of_total'] = ord5['value'] / ord5.groupby('Scenario')['value'].transform('sum')
+                col3,col4=st.columns(2)
+                with col3:
+                    fig=px.pie(ordx,values='value',names='Activity',facet_row='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_row_spacing=0.08,hover_data={'value':':.0f'})
+                    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+                    fig.update_layout(legend={'x':1.1,'y':1.0})
+                    with st.container(border=True):
+                        st.plotly_chart(fig)
+                with col4:
                     fig2=px.bar(ord5,x='Scenario',y='value',color='Activity',labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity','percentage_of_total':"% of Workload"},hover_data={'Activity': False,'Scenario': False,'value':':.1f','percentage_of_total':':.1%'})
-                    st.plotly_chart(fig2)
+                    with st.container(border=True):
+                        st.plotly_chart(fig2)
         with tab2:
             hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff-other_act,sl,max_util)
             pdemand=intensity(work_sum,p,p2,summ_fil['Total Orders'].sum(),proj_param['peak'],asa, asad,eff-other_act,sl,max_util)
