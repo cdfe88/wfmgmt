@@ -131,27 +131,38 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand['Digital CWL']=pd.Series(res)
     return demand
 
-def create_demand_plot(dem,typ,ymax):
-    figx=go.Figure()
-    figy=go.Figure()
-    figz=go.Figure()
+def create_demand_plot(dem1,dem2,ymax):
     mkt=', '.join(chosen_mkts)
-    figx.add_trace(go.Bar(x=[dem['Weekday'],dem['Hour']],y=dem['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')))
-    figx.add_trace(go.Bar(x=[dem['Weekday'],dem['Hour']],y=dem['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')))
-    figx.update_layout(yaxis_range=[0,ymax],barmode='stack',yaxis_title="Workload / HC", title=f"{typ}\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",legend=dict(
+    figx=go.make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
+    figy=go.Figure()
+    figz=go.make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload (hrs)")
+    
+    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')),row=1,col=1,legendgroup='A',showlegend=True)
+    figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')),row=1,col=1,legendgroup='A',showlegend=True)
+    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')),row=2,col=1,legendgroup='A',showlegend=False)
+    figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')),row=2,col=1,legendgroup='A',showlegend=False)
+    figx.update_layout(barmode='stack',legend=dict(
         orientation="h",
         yanchor="bottom",
         y=-0.5,
         xanchor="center",
         x=0.5
     ))
-    figx.add_trace(go.Scatter(x=[dem['Weekday'],dem['Hour']],y=dem['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload'))
-    figx.add_trace(go.Scatter(x=[dem['Weekday'],dem['Hour']],y=dem['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload'))
-    figy.add_trace(go.Scatter(x=[dem['Weekday'],dem['Hour']],y=dem['occupancy'], mode='lines+markers',name='Agent Utilization',line=dict(color='#0068c9', width=3)))
-    figy.update_layout(yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", title=f"{typ}\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
-    figz.add_trace(go.Bar(x=[dem['Weekday'],dem['Hour']],y=dem['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032')))
-    figz.add_trace(go.Scatter(x=[dem['Weekday'],dem['Hour']],y=dem['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3)))
-    figz.update_layout(yaxis_title="Workload (hrs)", title=f"{typ}\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",legend=dict(
+    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload'),row=1,col=1,legendgroup='A',showlegend=True)
+    figx.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload'),row=1,col=1,legendgroup='A',showlegend=True)
+    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload'),row=2,col=1,legendgroup='A',showlegend=False)
+    figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload'),row=2,col=1,legendgroup='A',showlegend=False)
+
+
+    figy.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['occupancy'], mode='lines+markers',name='Historic Data',line=dict(color='#0068c9', width=3)))
+    figy.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['occupancy'], mode='lines+markers',name='Projection',line=dict(color="#9a9a9a", width=3,dash='dot')))
+    figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
+    
+    figz.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032')),row=1,col=1,legendgroup='B',showlegend=True)
+    figz.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3)),row=1,col=1,legendgroup='B',showlegend=True)
+    figz.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032')),row=2,col=1,legendgroup='B',showlegend=False)
+    figz.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3)),row=2,col=1,legendgroup='B',showlegend=False)
+    figz.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
         y=-0.5,
@@ -522,7 +533,7 @@ if __name__ == '__main__':
                     ord3['% Change']=(ord3['Projected Values']-ord3['Historic Values'])/ord3['Historic Values']
                     ord4=pd.concat([ord2,ord3])
                     ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
-                    st.dataframe(ords4)
+                    st.table(ords4)
                     ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ord5=ord5.reset_index(names=['Activity'])
                     ord5['percentage_of_total'] = ord5['value'] / ord5.groupby('Scenario')['value'].transform('sum')
@@ -544,19 +555,15 @@ if __name__ == '__main__':
             p_wf,p_sch,p_r_sch=calculate_resources(pdemand)
             col1,col2=st.columns([3,1])
             with col1:
-                m=max(hdemand['positions'].max(),pdemand['positions'].max())
-                fig3,fig5,fig7=create_demand_plot(hdemand,'Historic Data Analysis',m)
-                fig4,fig6,fig8=create_demand_plot(pdemand,'Projected Values',m)
+                
+                fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
                 t1,t2,t3=st.tabs(['Workload / HC','Agent Utilization','Digital Work Burndown'])
                 with t1:
                     st.plotly_chart(fig3)
-                    st.plotly_chart(fig4)
                 with t2:
-                    st.plotly_chart(fig5)
-                    st.plotly_chart(fig6)
+                    st.plotly_chart(fig4)
                 with t3:
-                    st.plotly_chart(fig7)
-                    st.plotly_chart(fig8)
+                    st.plotly_chart(fig5)
             with col2:
                 st.write('Historical WF Requirements')    
                 st.dataframe(h_wf)
