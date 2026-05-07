@@ -528,9 +528,9 @@ if __name__ == '__main__':
                     ord5['percentage_of_total'] = ord5['value'] / ord5.groupby('Scenario')['value'].transform('sum')
                 col3,col4=st.columns(2)
                 with col3:
-                    fig=px.pie(ordx,values='value',names='Activity',facet_row='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_row_spacing=0.08,hover_data={'value':':.0f'})
+                    fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
                     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-                    fig.update_layout(legend={'x':1.1,'y':1.0})
+                    fig.update_layout(legend=dict(orientation="h",anchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=50))
                     with st.container(border=True):
                         st.plotly_chart(fig)
                 with col4:
