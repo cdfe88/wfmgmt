@@ -3,14 +3,10 @@ import pandas as pd
 import numpy as np
 from pyworkforce.scheduling import MinRequiredResources
 from pyworkforce.queuing import ErlangC
-from pprint import PrettyPrinter
 from datetime import date, datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
-
-
 
 
 def workload_ini():
@@ -278,7 +274,7 @@ if __name__ == '__main__':
         proj_param={}
         st.header('Tunable Parameters')
         with st.container(border=False):
-            with st.expander("Service Center Speed Benchmarks",expanded=True):
+            with st.expander("Service Center Speed Benchmarks",expanded=False):
                 st.write("Order Processing Times (sec)")
                 col1,col2=st.columns([0.8,1])
                 with col1:
