@@ -521,14 +521,14 @@ if __name__ == '__main__':
                     ord3=pd.DataFrame({'Historic Values':ord2['Historic Values'].sum(),'Projected Values':ord2['Projected Values'].sum()},index=pd.Index(['Total Workload']))
                     ord3['% Change']=(ord3['Projected Values']-ord3['Historic Values'])/ord3['Historic Values']
                     ord4=pd.concat([ord2,ord3])
-                    ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"})
+                    ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"}).set_properties(subset=([ord4.index[-1]], ord4.columns), **{'font-weight': 'bold'})
                     st.table(ords4)
                     ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ord5=ord5.reset_index(names=['Activity'])
                     ord5['percentage_of_total'] = ord5['value'] / ord5.groupby('Scenario')['value'].transform('sum')
                 col3,col4=st.columns(2)
                 with col3:
-                    fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
+                    fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Order type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
                     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
                     fig.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=50))
                     with st.container(border=True):
