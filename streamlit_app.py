@@ -146,7 +146,7 @@ def create_demand_plot(dem1,dem2):
     figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=False),row=2,col=1)
     figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload',legendgroup='A',showlegend=False),row=2,col=1)
     figx_ymax=max(dem1['positions'].max(),dem2['positions'].max(),dem1['Total Workload'].max(),dem2['Total Workload'].max(),dem1['Digital WL'].max(),dem2['Digital WL'].max())
-    figx.update_layout(barmode='stack',yaxis_range=[0,figx_ymax],legend=dict(
+    figx.update_layout(barmode='stack',legend=dict(
         traceorder='normal',
         orientation="h",
         yanchor="bottom",
@@ -154,7 +154,7 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
-
+    figx.update_yaxes(range=[0,figx_ymax],title_text="Workload (hr) / Headcount")
     figy.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['occupancy'], mode='lines+markers',name='Historic Data',line=dict(color='#0068c9', width=3)))
     figy.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['occupancy'], mode='lines+markers',name='Projection',line=dict(color="#9a9a9a", width=3,dash='dot')))
     figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", yaxis_tickformat=".0%", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
