@@ -530,7 +530,7 @@ if __name__ == '__main__':
                 with col3:
                     fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Creation type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
                     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-                    fig.update_layout(legend=dict(orientation="h",anchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=50))
+                    fig.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=50))
                     with st.container(border=True):
                         st.plotly_chart(fig)
                 with col4:
