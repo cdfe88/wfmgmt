@@ -154,7 +154,7 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
-    figx.update_yaxes(range=[0,figx_ymax],title_text="Workload (hr) / Headcount")
+    figx.update_yaxes(range=[0,figx_ymax],title_text="")
     figy.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['occupancy'], mode='lines+markers',name='Historic Data',line=dict(color='#0068c9', width=3)))
     figy.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['occupancy'], mode='lines+markers',name='Projection',line=dict(color="#9a9a9a", width=3,dash='dot')))
     figy.update_layout(showlegend=True,yaxis_range=[0, 1],yaxis_title="Agent Utilization (%)", yaxis_tickformat=".0%", title=f"{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}")
@@ -163,6 +163,7 @@ def create_demand_plot(dem1,dem2):
     figz.add_trace(go.Scatter(x=[dem1['Weekday'],dem1['Hour']],y=dem1['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=True),row=1,col=1)
     figz.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'], name='Digital Work Creation',marker=dict(color='#840032'),legendgroup='B',showlegend=False),row=2,col=1)
     figz.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital CWL'], mode='lines',name='Digital Work Burndown',line=dict(color='#0068c9', width=3),legendgroup='B',showlegend=False),row=2,col=1)
+    figz_ymax=max(dem1['Digital WL'].max(),dem2['Digital WL'].max(),dem1['Digital CWL'].max(),dem2['Digital CWL'].max())
     figz.update_layout(legend=dict(
         traceorder='normal',
         orientation="h",
@@ -171,7 +172,7 @@ def create_demand_plot(dem1,dem2):
         xanchor="center",
         x=0.5
     ))
-    figz.update_yaxes(autorange=False)
+    figz.update_yaxes(range=[0,figz_ymax])
     return figx,figy,figz
 
 def calculate_resources(demand):
