@@ -570,7 +570,7 @@ if __name__ == '__main__':
                 #t_wf=twf.melt(ignore_index=False,var_name='Scenario')
 
                 #st.dataframe(t_wf.T)
-                st.dataframe(h_pf)
+                st.dataframe(h_wf)
                 st.dataframe(p_wf)
         with tab3:
             col1,col2=st.columns(2)
