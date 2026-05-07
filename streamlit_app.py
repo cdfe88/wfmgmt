@@ -131,7 +131,7 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand['Digital CWL']=pd.Series(res)
     return demand
 
-def create_demand_plot(dem1,dem2,ymax):
+def create_demand_plot(dem1,dem2):
     mkt=', '.join(chosen_mkts)
     figx=go.make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
     figy=go.Figure()
