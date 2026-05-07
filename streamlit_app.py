@@ -7,7 +7,7 @@ from pprint import PrettyPrinter
 from datetime import date, datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
-from streamlit_js_eval import streamlit_js_eval
+from plotly.subplots import make_subplots
 
 
 
@@ -133,9 +133,9 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
 
 def create_demand_plot(dem1,dem2):
     mkt=', '.join(chosen_mkts)
-    figx=go.make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
+    figx=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
     figy=go.Figure()
-    figz=go.make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload (hrs)")
+    figz=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.02,subplot_titles=(f"Historic Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Digital Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload (hrs)")
     
     figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9')),row=1,col=1,legendgroup='A',showlegend=True)
     figx.add_trace(go.Bar(x=[dem1['Weekday'],dem1['Hour']],y=dem1['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff')),row=1,col=1,legendgroup='A',showlegend=True)
