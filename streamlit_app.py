@@ -521,7 +521,7 @@ if __name__ == '__main__':
                     ord3=pd.DataFrame({'Historic Values':ord2['Historic Values'].sum(),'Projected Values':ord2['Projected Values'].sum()},index=pd.Index(['Total Workload']))
                     ord3['% Change']=(ord3['Projected Values']-ord3['Historic Values'])/ord3['Historic Values']
                     ord4=pd.concat([ord2,ord3])
-                    ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"}).set_properties(subset=([ord4.index[-1]], ord4.rows), **{'font-weight': 'bold'})
+                    ords4=ord4.style.format({"Historic Values": "{:,.0f}","Projected Values": "{:,.0f}", "% Change": "{:.1%}"}).set_properties(subset=([ord4.index[-1]], ord4.columns), {'font-weight': 'bold'})
                     st.table(ords4)
                     ord5=ord2[['Historic Values','Projected Values']].melt(ignore_index=False,var_name='Scenario')
                     ord5=ord5.reset_index(names=['Activity'])
