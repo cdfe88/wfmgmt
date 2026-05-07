@@ -145,7 +145,7 @@ def create_demand_plot(dem1,dem2):
         traceorder='normal',
         orientation="h",
         yanchor="bottom",
-        y=-0.2,
+        y=-0.8,
         xanchor="center",
         x=0.5
     ))
@@ -167,7 +167,7 @@ def create_demand_plot(dem1,dem2):
         traceorder='normal',
         orientation="h",
         yanchor="bottom",
-        y=-0.2,
+        y=-0.8,
         xanchor="center",
         x=0.5
     ))
