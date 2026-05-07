@@ -565,10 +565,11 @@ if __name__ == '__main__':
                 with t3:
                     st.plotly_chart(fig5,height='stretch')
             with col2:
-                st.write('Historical WF Requirements')    
-                st.dataframe(h_wf)
-                st.write('Projected WF Requirements')
-                st.dataframe(p_wf)
+                twf=pd.join(h_wf,p_wf,suffixes=('_h','_p'))
+                twf=twf.drop(['FTE (no shrinkage)','OT (no shrinkage)'])
+                t_wf=twf.melt(ignore_index=False,var_name='Scenario')
+
+                st.dataframe(t_wf.T)
         with tab3:
             col1,col2=st.columns(2)
             with col1:
