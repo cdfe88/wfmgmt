@@ -142,6 +142,7 @@ def create_demand_plot(dem1,dem2):
     figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['raw_positions'],name='Required HC w/o shrinkage',marker=dict(color='#0068c9'),legendgroup='A',showlegend=False),row=2,col=1)
     figx.add_trace(go.Bar(x=[dem2['Weekday'],dem2['Hour']],y=dem2['shrink_delta'],name=f"Required Headcount with {(1-eff):.0%} shrinkage",marker=dict(color='#83c9ff'),legendgroup='A',showlegend=False),row=2,col=1)
     figx.update_layout(barmode='stack',legend=dict(
+        traceorder='normal',
         orientation="h",
         yanchor="bottom",
         y=-1,
