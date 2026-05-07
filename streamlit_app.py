@@ -146,7 +146,7 @@ def create_demand_plot(dem1,dem2):
     figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Total Workload'],mode='lines',line=dict(color='#840032', width=3),name='Total Workload',legendgroup='A',showlegend=False),row=2,col=1)
     figx.add_trace(go.Scatter(x=[dem2['Weekday'],dem2['Hour']],y=dem2['Digital WL'],mode='lines',line=dict(color='#ff312e', width=3),name='Digital Workload',legendgroup='A',showlegend=False),row=2,col=1)
     figx_ymax=max(dem1['positions'].max(),dem2['positions'].max(),dem1['Total Workload'].max(),dem2['Total Workload'].max(),dem1['Digital WL'].max(),dem2['Digital WL'].max())
-    figx.update_layout(barmode='stack',yaxes_range=[0,figx_ymax],legend=dict(
+    figx.update_layout(barmode='stack',yaxis_range=[0,figx_ymax],legend=dict(
         traceorder='normal',
         orientation="h",
         yanchor="bottom",
