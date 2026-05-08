@@ -171,6 +171,22 @@ def create_demand_plot(dem1,dem2):
     figz.update_yaxes(range=[0,figz_ymax])
     return figx,figy,figz
 
+def create_roster_fig(demand,resources):
+    #mkt=', '.join(chosen_mkts)
+    #figx=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.2,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
+    figx=go.Figure()
+    figx.add_trace(go.Bar(x=[resources['Weekday'],resources['Hour']],y=resources['Headcount'],name='Calculated HC',marker=dict(color='#0068c9'),legendgroup='A',showlegend=True))
+    figx.add_trace(go.Scatter(x=[demand['Weekday'],demand['Hour']],y=demand['positions'],mode='lines',line=dict(color='#9a9a9a', width=3),name='Calculated Demand',legendgroup='A',showlegend=True))
+    figx.update_layout(legend=dict(
+        traceorder='normal',
+        orientation="h",
+        yanchor="bottom",
+        y=-0.6,
+        xanchor="center",
+        x=0.5
+    ))
+    return figx
+
 def calculate_resources(demand):
     open=min(demand['Hour'])
     pos=demand.pivot(index='Weekday', columns='Hour', values='positions').fillna(0)
@@ -218,13 +234,23 @@ def calculate_resources(demand):
     sched['shift start']=pd.to_datetime(sched['shift start'],format='%H:%M:%S').dt.time
     sched['shift end']=pd.to_datetime(sched['shift end'],format='%H:%M:%S').dt.time
     sched=sched.sort_values(by=['shift start','shift end'])
-    sched=sched.drop(columns=['shift start','shift end'])
+    dsched=sched.drop(columns=['shift start','shift end'])
+    m_sched=sched.drop(columns=['shift'])
+    m_sched=m_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
+    tot_res=m_sched[['weekday','shift start']].drop_duplicates()
+    tot_res=tot_res.rename(columns={'weekday':'Weekday','shift start':'Hour'})
+    tot_res['Headcount']=m_sched['hc'][(m_sched['weekday']==tot_res['Weekday'])&(tot_res['Hour']>=m_sched['shift start'])&(tot_res['Hour']<m_sched['shift end'])].sum()
     r_sched=r_reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
     r_sched[['shift start','shift end']]=r_sched['shift'].str.split(' - ', expand=True)
     r_sched['shift start']=pd.to_datetime(r_sched['shift start'],format='%H:%M:%S').dt.time
     r_sched['shift end']=pd.to_datetime(r_sched['shift end'],format='%H:%M:%S').dt.time
     r_sched=r_sched.sort_values(by=['shift start','shift end'])
-    r_sched=r_sched.drop(columns=['shift start','shift end'])
+    dr_sched=r_sched.drop(columns=['shift start','shift end'])
+    rm_sched=r_sched.drop(columns=['shift'])
+    rm_sched=rm_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
+    rtot_res=rm_sched[['weekday','shift start']].drop_duplicates()
+    rtot_res=rtot_res.rename(columns={'weekday':'Weekday','shift start':'Hour'})
+    rtot_res['Headcount']=rm_sched['hc'][(rm_sched['weekday']==rtot_res['Weekday'])&(rtot_res['Hour']>=rm_sched['shift start'])&(rtot_res['Hour']<rm_sched['shift end'])].sum()
     #sched=pd.merge(r_reqs,reqs,how='outer',on=['day','shift'],suffixes=(' min',''))
     #occ=pd.DataFrame([[k,v] for k,v in shifts.items()])
     #occ.columns=['shift','dist']
@@ -233,7 +259,7 @@ def calculate_resources(demand):
     #rost['HC'] = rost.apply(lambda row: row['resources'] * np.array(row['dist']), axis=1)
     #rost2=rost.groupby('day')[['HC min','HC']].sum().reset_index()
     #return pd.DataFrame(solution['resources_shifts']),pd.DataFrame(r_solution['resources_shifts'])
-    return wfm,sched,r_sched
+    return wfm,dsched,dr_sched,tot_res,rtot_res
 
 if __name__ == '__main__':
     st.set_page_config(layout="wide")
@@ -551,8 +577,8 @@ if __name__ == '__main__':
         with tab2:
             hdemand=intensity(work_sum,h,h2,summ_fil['Total Orders'].sum(),historic['peak'],asa, asad,eff-other_act,sl,max_util)
             pdemand=intensity(work_sum,p,p2,summ_fil['Total Orders'].sum(),proj_param['peak'],asa, asad,eff-other_act,sl,max_util)
-            h_wf,h_sch,h_r_sch=calculate_resources(hdemand)
-            p_wf,p_sch,p_r_sch=calculate_resources(pdemand)
+            h_wf,h_sch,h_r_sch,htr=calculate_resources(hdemand)
+            p_wf,p_sch,p_r_sch,ptr=calculate_resources(pdemand)
             hwft=pd.DataFrame(list(h_wf.values()), index=h_wf.keys(),columns=['Historical'])
             pwft=pd.DataFrame(list(p_wf.values()), index=p_wf.keys(),columns=['Projected'])
             twf=hwft.join(pwft)
@@ -569,10 +595,13 @@ if __name__ == '__main__':
                 st.plotly_chart(fig5,height='stretch')
 
         with tab3:
-            col1,col2=st.columns(2)
-            with col1:
-                st.write('Historic Data')
-                st.dataframe(h_sch)
-            with col2:
-                st.write('Projected Scenario')
-                st.dataframe(p_sch)
+            scen_choice=st.pills("Scenario", options=['Historical Data','Projection'],selection_mode='single',default='Historical Data',required=True)
+            if scen_choice=='Projection':
+                dafr= p_sch
+                fig_ros=create_roster_fig(pdemand,ptr)
+            else:
+                dafr=h_sch
+                fig_ros=create_roster_fig(hdemand,htr)
+            with st.expander('Suggested Roster per Shift and Business Day', expanded=False):
+                st.dataframe(dafr)
+            st.plotly_chart(fig_ros)
