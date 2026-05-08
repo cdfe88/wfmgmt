@@ -171,6 +171,16 @@ def create_demand_plot(dem1,dem2):
     figz.update_yaxes(range=[0,figz_ymax])
     return figx,figy,figz
 
+def agg_hc(schedule):
+    rows=[]
+    for _,r in schedule.iterrows():
+        hrs= pd.date_Range(start=r['shift start'].floor('H'),end=r['shift end'].ceil('H'),freq='H',closed='left')
+        for h in hrs:
+            rows.append({'Day':r['weekday'],'Hour':h.hour,'Headcount':'hc'})
+    tot=pd.DataFrame(rows)
+    tota=(tot.groupby(['Weekday','Hour'],as_index=False)['Headcount'].sum())
+    return tota
+
 def create_roster_fig(demand,resources):
     #mkt=', '.join(chosen_mkts)
     #figx=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.2,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
@@ -186,6 +196,31 @@ def create_roster_fig(demand,resources):
         x=0.5
     ))
     return figx
+
+def calc_reqs(req,shifts,costs,overtime):
+    scheduler = MinRequiredResources(num_days=len(req),  # S
+                                     periods=len(req[0]),  # P
+                                     shifts_coverage=shifts,
+                                     required_resources=req,
+                                     cost_dict=costs,
+                                     max_period_concurrency=100,  # gamma
+                                     max_shift_concurrency=100)  # beta
+    solution = scheduler.solve()
+    reqs=pd.DataFrame(solution['resources_shifts'])
+    reqs['weekday']=pd.Categorical(reqs.apply(lambda row: days[row['day']],axis=1), categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
+    ovrt=pd.DataFrame({'shift':overtime.keys(),'overtime':overtime.values()})
+    c_ovt=pd.merge(reqs,ovrt,how='left',on='shift')
+    wfm={'FTE':c_ovt['resources'].sum()//5,'OT':(c_ovt['resources']*c_ovt['overtime']).sum()+8*(c_ovt['resources'].sum()%5)}
+    sched=reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
+    sched[['shift start','shift end']]=sched['shift'].str.split(' - ', expand=True)
+    sched['shift start']=pd.to_datetime(sched['shift start'],format='%H:%M:%S').dt.time
+    sched['shift end']=pd.to_datetime(sched['shift end'],format='%H:%M:%S').dt.time
+    sched=sched.sort_values(by=['shift start','shift end'])
+    dsched=sched.drop(columns=['shift start','shift end'])
+    m_sched=sched.drop(columns=['shift'])
+    m_sched=m_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
+    tot_res=agg_hc(m_sched)
+    return wfm,dsched,tot_res
 
 def calculate_resources(demand):
     open=min(demand['Hour'])
@@ -204,61 +239,9 @@ def calculate_resources(demand):
     for k,v in shifts.items():
         costs[k]=8+1.5*(sum(v)-8)
         ovt[k]=sum(v)-8
-    scheduler = MinRequiredResources(num_days=len(req),  # S
-                                     periods=len(req[0]),  # P
-                                     shifts_coverage=shifts,
-                                     required_resources=req,
-                                     cost_dict=costs,
-                                     max_period_concurrency=100,  # gamma
-                                     max_shift_concurrency=100)  # beta
-    r_scheduler = MinRequiredResources(num_days=len(r_req),  # S
-                                     periods=len(r_req[0]),  # P
-                                     shifts_coverage=shifts,
-                                     required_resources=r_req,
-                                     cost_dict=costs,
-                                     max_period_concurrency=100,  # gamma
-                                     max_shift_concurrency=100)  # beta
-    solution = scheduler.solve()
-    r_solution=r_scheduler.solve()
-    #cost=[r_solution['cost'], solution['cost']]
-    reqs=pd.DataFrame(solution['resources_shifts'])
-    reqs['weekday']=pd.Categorical(reqs.apply(lambda row: days[row['day']],axis=1), categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
-    r_reqs=pd.DataFrame(r_solution['resources_shifts'])
-    r_reqs['weekday']=pd.Categorical(r_reqs.apply(lambda row: days[row['day']],axis=1), categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
-    ovrt=pd.DataFrame({'shift':ovt.keys(),'overtime':ovt.values()})
-    c_ovt=pd.merge(reqs,ovrt,how='left',on='shift')
-    r_c_ovt=pd.merge(r_reqs,ovrt,how='left',on='shift')
-    wfm={'FTE':c_ovt['resources'].sum()//5,'OT':(c_ovt['resources']*c_ovt['overtime']).sum()+8*(c_ovt['resources'].sum()%5),'FTE (no shrinkage)':r_c_ovt['resources'].sum()//5,'OT (no shrinkage)':(r_c_ovt['resources']*r_c_ovt['overtime']).sum()+8*(r_c_ovt['resources'].sum()%5)}
-    sched=reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
-    sched[['shift start','shift end']]=sched['shift'].str.split(' - ', expand=True)
-    sched['shift start']=pd.to_datetime(sched['shift start'],format='%H:%M:%S').dt.time
-    sched['shift end']=pd.to_datetime(sched['shift end'],format='%H:%M:%S').dt.time
-    sched=sched.sort_values(by=['shift start','shift end'])
-    dsched=sched.drop(columns=['shift start','shift end'])
-    m_sched=sched.drop(columns=['shift'])
-    m_sched=m_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
-    tot_res=m_sched[['weekday','shift start']].drop_duplicates()
-    tot_res=tot_res.rename(columns={'weekday':'Weekday','shift start':'Hour'})
-    tot_res['Headcount']=m_sched['hc'][(m_sched['weekday']==tot_res['Weekday'])&(tot_res['Hour']>=m_sched['shift start'])&(tot_res['Hour']<m_sched['shift end'])].sum()
-    r_sched=r_reqs.pivot(index='shift',columns='weekday',values='resources').reset_index()
-    r_sched[['shift start','shift end']]=r_sched['shift'].str.split(' - ', expand=True)
-    r_sched['shift start']=pd.to_datetime(r_sched['shift start'],format='%H:%M:%S').dt.time
-    r_sched['shift end']=pd.to_datetime(r_sched['shift end'],format='%H:%M:%S').dt.time
-    r_sched=r_sched.sort_values(by=['shift start','shift end'])
-    dr_sched=r_sched.drop(columns=['shift start','shift end'])
-    rm_sched=r_sched.drop(columns=['shift'])
-    rm_sched=rm_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
-    rtot_res=rm_sched[['weekday','shift start']].drop_duplicates()
-    rtot_res=rtot_res.rename(columns={'weekday':'Weekday','shift start':'Hour'})
-    rtot_res['Headcount']=rm_sched['hc'][(rm_sched['weekday']==rtot_res['Weekday'])&(rtot_res['Hour']>=rm_sched['shift start'])&(rtot_res['Hour']<rm_sched['shift end'])].sum()
-    #sched=pd.merge(r_reqs,reqs,how='outer',on=['day','shift'],suffixes=(' min',''))
-    #occ=pd.DataFrame([[k,v] for k,v in shifts.items()])
-    #occ.columns=['shift','dist']
-    #rost=pd.merge(sched, occ, on='shift',how='left')
-    #rost['HC min']=rost.apply(lambda row: row['resources min']*np.array(row['dist']),axis=1)
-    #rost['HC'] = rost.apply(lambda row: row['resources'] * np.array(row['dist']), axis=1)
-    #rost2=rost.groupby('day')[['HC min','HC']].sum().reset_index()
-    #return pd.DataFrame(solution['resources_shifts']),pd.DataFrame(r_solution['resources_shifts'])
+    wfm,dsched,tot_res=calc_reqs(req,shifts,costs,ovt)
+    rwfm,dr_sched,rtot_res=calc_reqs(r_req,shifts,costs,ovt)
+    
     return wfm,dsched,dr_sched,tot_res,rtot_res
 
 if __name__ == '__main__':
@@ -582,7 +565,7 @@ if __name__ == '__main__':
             hwft=pd.DataFrame(list(h_wf.values()), index=h_wf.keys(),columns=['Historical'])
             pwft=pd.DataFrame(list(p_wf.values()), index=p_wf.keys(),columns=['Projected'])
             twf=hwft.join(pwft)
-            twf=twf.drop(index=['FTE (no shrinkage)','OT (no shrinkage)'])
+            #twf=twf.drop(index=['FTE (no shrinkage)','OT (no shrinkage)'])
             st.write('Optimized Headcount and Overtime for each Scenario')
             st.table(twf.T)
             fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
