@@ -219,6 +219,8 @@ def calc_reqs(req,shifts,costs,overtime):
     dsched=sched.drop(columns=['shift start','shift end'])
     m_sched=sched.drop(columns=['shift'])
     m_sched=m_sched.melt(id_vars=['shift start','shift end'],var_name='weekday',value_name='hc')
+    m_sched['weekday']=pd.Categorical(m_sched['weekday'], categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
+    m_sched=m_sched.sort_values(by=['weekday','shift start','shift end'])
     tot_res=agg_hc(m_sched)
     return wfm,dsched,tot_res
 
