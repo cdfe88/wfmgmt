@@ -179,6 +179,7 @@ def agg_hc(schedule):
             rows.append({'Weekday':r['weekday'],'Hour':h.time(),'Headcount':r['hc']})
     tot=pd.DataFrame(rows)
     tota=(tot.groupby(['Weekday','Hour'],as_index=False)['Headcount'].sum())
+    tota['Weekday']=pd.Categorical(tota['Weekday'],categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
     return tota
 
 def create_roster_fig(demand,resources):
