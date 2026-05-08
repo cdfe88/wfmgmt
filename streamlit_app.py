@@ -242,7 +242,7 @@ def calculate_resources(demand):
     wfm,dsched,tot_res=calc_reqs(req,shifts,costs,ovt)
     rwfm,dr_sched,rtot_res=calc_reqs(r_req,shifts,costs,ovt)
     
-    return wfm,dsched,dr_sched,tot_res,rtot_res
+    return wfm,dsched,dr_sched,tot_res
 
 if __name__ == '__main__':
     st.set_page_config(layout="wide")
