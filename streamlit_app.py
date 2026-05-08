@@ -176,7 +176,7 @@ def agg_hc(schedule):
     for _,r in schedule.iterrows():
         hrs= pd.date_range(start=pd.Timestamp.combine(pd.Timestamp.now().date(), r['shift start']),end=pd.Timestamp.combine(pd.Timestamp.now().date(), r['shift end']),freq='h',inclusive='left')
         for h in hrs:
-            rows.append({'Day':r['weekday'],'Hour':h.hour,'Headcount':'hc'})
+            rows.append({'Weekday':r['weekday'],'Hour':h.hour,'Headcount':'hc'})
     tot=pd.DataFrame(rows)
     tota=(tot.groupby(['Weekday','Hour'],as_index=False)['Headcount'].sum())
     return tota
