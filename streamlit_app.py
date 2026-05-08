@@ -557,7 +557,7 @@ if __name__ == '__main__':
             pwft=pd.DataFrame(list(p_wf.values()), index=p_wf.keys(),columns=['Projected'])
             st.dataframe(hwft)
             st.dataframe(pwft)
-            twf=pd.merge(hwft,pwft)
+            twf=hwft.join(pwft)
             st.table(twf.reset_index().T)
             fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
             t1,t2,t3=st.tabs(['Workload / HC','Agent Utilization','Digital Work Burndown'])
