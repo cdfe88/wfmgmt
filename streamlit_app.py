@@ -188,7 +188,7 @@ def create_roster_fig(demand,resources):
     #figx=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.2,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
     figx=go.Figure()
     figx.add_trace(go.Bar(x=[resources['Weekday'],resources['Hour']],y=resources['Headcount'],name='Suggested Roster',marker=dict(color='#0068c9'),legendgroup='A',showlegend=True))
-    figx.add_trace(go.Scatter(x=[demand['Weekday'],demand['Hour']],y=demand['positions'],mode='lines',line=dict(color='#9a9a9a', width=3,shape='hvh'),name='Headcount Demand',legendgroup='A',showlegend=True))
+    figx.add_trace(go.Scatter(x=[demand['Weekday'],demand['Hour']],y=demand['positions'],mode='lines',line=dict(color='#9a9a9a', width=3,shape='hvh',dash='dash'),name='Headcount Demand',legendgroup='A',showlegend=True))
     figx.update_layout(legend=dict(
         traceorder='normal',
         orientation="h",
