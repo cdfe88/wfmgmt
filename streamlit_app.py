@@ -553,25 +553,19 @@ if __name__ == '__main__':
             pdemand=intensity(work_sum,p,p2,summ_fil['Total Orders'].sum(),proj_param['peak'],asa, asad,eff-other_act,sl,max_util)
             h_wf,h_sch,h_r_sch=calculate_resources(hdemand)
             p_wf,p_sch,p_r_sch=calculate_resources(pdemand)
-            col1,col2=st.columns([3,1])
-            with col1:
-                
-                fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
-                t1,t2,t3=st.tabs(['Workload / HC','Agent Utilization','Digital Work Burndown'])
-                with t1:
-                    st.plotly_chart(fig3,height='stretch')
-                with t2:
-                    st.plotly_chart(fig4)
-                with t3:
-                    st.plotly_chart(fig5,height='stretch')
-            with col2:
-                #twf=pd.merge(h_wf,p_wf,suffixes=('_h','_p'))
-                #twf=twf.drop(['FTE (no shrinkage)','OT (no shrinkage)'])
-                #t_wf=twf.melt(ignore_index=False,var_name='Scenario')
+            hwft=pd.DataFrame.from_dict(h_wf, orient='index', columns=['Historical'])
+            pwft=pd.DataFrame.from_dict(p_wf, orient='index', columns=['Projected']) 
+            twf=pd.merge(hwft,pwft)
+            st.table(twf.reset_index().T)
+            fig3,fig4,fig5=create_demand_plot(hdemand,pdemand)
+            t1,t2,t3=st.tabs(['Workload / HC','Agent Utilization','Digital Work Burndown'])
+            with t1:
+                st.plotly_chart(fig3,height='stretch')
+            with t2:
+                st.plotly_chart(fig4)
+            with t3:
+                st.plotly_chart(fig5,height='stretch')
 
-                #st.dataframe(t_wf.T)
-                st.dataframe(h_wf)
-                st.dataframe(p_wf)
         with tab3:
             col1,col2=st.columns(2)
             with col1:
