@@ -587,4 +587,6 @@ if __name__ == '__main__':
                 fig_ros=create_roster_fig(hdemand,htr)
             with st.expander('Suggested Roster per Shift and Business Day', expanded=False):
                 st.dataframe(dafr)
+            st.dataframe(hdemand)
+            st.dataframe(htr)
             st.plotly_chart(fig_ros)
