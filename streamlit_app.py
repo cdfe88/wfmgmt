@@ -174,7 +174,7 @@ def create_demand_plot(dem1,dem2):
 def agg_hc(schedule):
     rows=[]
     for _,r in schedule.iterrows():
-        hrs= pd.date_range(start=r['shift start'],end=r['shift end'],freq='H',closed='left')
+        hrs= pd.date_range(start=r['shift start'],end=r['shift end'],freq='h',closed='left')
         for h in hrs:
             rows.append({'Day':r['weekday'],'Hour':h.hour,'Headcount':'hc'})
     tot=pd.DataFrame(rows)
