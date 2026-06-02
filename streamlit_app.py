@@ -25,7 +25,6 @@ def workload_ini():
     wload['Close'] = pd.to_datetime(wload['Close'], format='%H:%M:%S.000').dt.time
     wload['Sat Open'] = pd.to_datetime(wload['Sat Open'], format='%H:%M:%S.000').dt.time
     wload['Sat Close'] = pd.to_datetime(wload['Sat Close'], format='%H:%M:%S.000').dt.time
-    
     wload['drop']=wload.apply(lambda row: (row['Day']=='Sunday') | 
                               (row['Day']=='Saturday') & (True if pd.isna(row['Sat Open']) else ((row['Hour'] <= row['Sat Open']) | (row['Hour'] >= row['Sat Close']))) | 
                               (row['Day']!='Saturday') & ((row['Hour']<row['Open']) | (row['Hour']>row['Close'])) ,axis=1)
