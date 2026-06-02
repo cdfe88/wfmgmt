@@ -40,19 +40,19 @@ def workload_ini():
     return wload
 
 def workload_agg(wload):
-    wload['W Mgmt'] = wload['Order Mgmt HT (hr)'] * wload['Occur Int'] / wload['count']
-    wload['W Int'] = wload['Order Mgmt Interactions'] * wload['Occur Int'] / wload['count']
+    wload['W Mgmt'] = wload['Order Management HT (hr)'] * wload['Occur Int'] / wload['count']
+    wload['W Int'] = wload['Order Management Interactions'] * wload['Occur Int'] / wload['count']
     wload['W Ord'] = wload['Orders'] * wload['Occur Ord'] / wload['count']
     wload['W Ana'] = wload['Analog'] * wload['Occur Ord'] / wload['count']
     wload['W Dig'] = wload['Digital'] * wload['Occur Ord'] / wload['count']
-    agru1=wload.groupby(['ADay','AHour'])[['Order Mgmt HT (hr)','Order Mgmt Interactions','W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
+    agru1=wload.groupby(['ADay','AHour'])[['Order Management HT (hr)','Order Management Interactions','W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
     
     colu_norm=['W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']
     agru_ss=agru1[colu_norm]
     csum=agru_ss.sum()
     agru1[colu_norm]=agru_ss.div(csum,axis=1)
     
-    agru1['Mgmt HT (s)'] = (agru1['Order Mgmt HT (hr)'] / agru1['Order Mgmt Interactions'] * 3600).fillna(0)
+    agru1['Mgmt HT (s)'] = (agru1['Order Management HT (hr)'] / agru1['Order Management Interactions'] * 3600).fillna(0)
     
     agru1=agru1.fillna(0)
     agru1['Digital Order WL flat'] = 1 / len(agru1)
@@ -83,7 +83,7 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand=pd.DataFrame()
     demand['Weekday']=wl['ADay']
     demand['Hour']=wl['AHour']
-    mipo=tot/wl['Order Mgmt Interactions'].sum()
+    mipo=tot/wl['Order Management Interactions'].sum()
     demand['Interactions']=(fac['Digital (Confirmed)']+fac['Digital (In Review)'])*wl['W Dig']+(fac['Analog (Confirmed)']+fac['Analog (In Review)'])*wl['W Ana']+wl['W Int']*peak*mipo
     demand['AHT']=((su['Digital Order Creation']*wl['Digital Order WL flat']+su['Analog Order Creation']*wl['W Ana']+(su['Order Modification']+su['Order Cancellation']+su['Misc. Order Management'])*wl['W Mgmt'])*60)/demand['Interactions']
     demand['ASA']=(as1*((fac['Analog (Confirmed)']+fac['Analog (In Review)'])*wl['W Ana']+wl['W Int']*peak*mipo)+as2*(fac['Digital (Confirmed)']+fac['Digital (In Review)'])*wl['W Dig'])/demand['Interactions']
