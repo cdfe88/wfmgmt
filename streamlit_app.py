@@ -21,10 +21,10 @@ def workload_ini():
     wload['Hour'] = pd.to_datetime(wload['Hour'], format='%H:%M:%S.000').dt.time
     wload['Date']= wload.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)
     
-    wload['Open'] = pd.to_datetime(wload['Open'], format='ISO8601').dt.time
-    wload['Close'] = pd.to_datetime(wload['Close'], format='ISO8601').dt.time
-    wload['Sat Open'] = pd.to_datetime(wload['Sat Open'], format='ISO8601').dt.time
-    wload['Sat Close'] = pd.to_datetime(wload['Sat Close'], format='ISO8601').dt.time
+    wload['Open'] = pd.to_datetime(wload['Open'], format='%H:%M:%S.000').dt.time
+    wload['Close'] = pd.to_datetime(wload['Close'], format='%H:%M:%S.000').dt.time
+    wload['Sat Open'] = pd.to_datetime(wload['Sat Open'], format='%H:%M:%S.000').dt.time
+    wload['Sat Close'] = pd.to_datetime(wload['Sat Close'], format='%H:%M:%S.000').dt.time
     
     wload['drop']=wload.apply(lambda row: (row['Day']=='Sunday') | 
                               (row['Day']=='Saturday') & (True if pd.isna(row['Sat Open']) else ((row['Hour'] <= row['Sat Open']) | (row['Hour'] >= row['Sat Close']))) | 
