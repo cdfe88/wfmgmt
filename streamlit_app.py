@@ -249,7 +249,7 @@ if __name__ == '__main__':
         summ = pd.read_csv('monthly_summary.csv')
         summ['Date']= summ.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)
         media=pd.read_csv('media_types2.csv',header=0)
-        media['Date']= media.apply(lambda row: date(row['YEAR'],row['MONTH'],1),axis=1)  
+        media['Date']= media.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)  
         if len(chosen_mkts)==0:
             work_fil=work[work['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
             summ_fil=summ[summ['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
