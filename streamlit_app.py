@@ -8,21 +8,24 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+def reset_widgets():
+    if 'count' not in st.session_state:
+        st.session_state.count = 0
+    else:
+        st.session_state.count +=1
 
 def workload_ini():
-    wload = pd.read_csv('workload.csv')
+    wload = pd.read_csv('hourly_sum.csv')
     wload.fillna(0)
     wload['Day']=pd.Categorical(wload['Day'], categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], ordered=True)
     wload['Hour'] = pd.to_datetime(wload['Hour'], format='%H:%M:%S.000').dt.time
     wload['Date']= wload.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)
-    timz=pd.read_csv('tz.csv')
-    wload=pd.merge(wload,timz,on='Market',how='left')
-    hoo = pd.read_csv('hoo.csv')
-    hoo['Open'] = pd.to_datetime(hoo['Open'], format='%H:%M').dt.time
-    hoo['Close'] = pd.to_datetime(hoo['Close'], format='%H:%M').dt.time
-    hoo['Sat Open'] = pd.to_datetime(hoo['Sat Open'], format='%H:%M').dt.time
-    hoo['Sat Close'] = pd.to_datetime(hoo['Sat Close'], format='%H:%M').dt.time
-    wload = pd.merge(wload, hoo, on='Market', how='left')
+    
+    wload['Open'] = pd.to_datetime(hoo['Open'], format='%H:%M').dt.time
+    wload['Close'] = pd.to_datetime(hoo['Close'], format='%H:%M').dt.time
+    wload['Sat Open'] = pd.to_datetime(hoo['Sat Open'], format='%H:%M').dt.time
+    wload['Sat Close'] = pd.to_datetime(hoo['Sat Close'], format='%H:%M').dt.time
+    
     wload['drop']=wload.apply(lambda row: (row['Day']=='Sunday') | 
                               (row['Day']=='Saturday') & (True if pd.isna(row['Sat Open']) else ((row['Hour'] <= row['Sat Open']) | (row['Hour'] >= row['Sat Close']))) | 
                               (row['Day']!='Saturday') & ((row['Hour']<row['Open']) | (row['Hour']>row['Close'])) ,axis=1)
@@ -44,20 +47,14 @@ def workload_agg(wload):
     wload['W Ana'] = wload['Analog'] * wload['Occur Ord'] / wload['count']
     wload['W Dig'] = wload['Digital'] * wload['Occur Ord'] / wload['count']
     agru1=wload.groupby(['ADay','AHour'])[['Order Mgmt HT (hr)','Order Mgmt Interactions','W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
-    #agru = wload.groupby('Market')[['W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']].sum().reset_index()
-    #wload = pd.merge(wload, agru, on='Market', how='left')
+    
     colu_norm=['W Mgmt', 'W Int', 'W Ord', 'W Ana', 'W Dig']
     agru_ss=agru1[colu_norm]
     csum=agru_ss.sum()
     agru1[colu_norm]=agru_ss.div(csum,axis=1)
-    #agru1['Mgmt WL'] = agru1['W Mgmt_x'] / wload['W Mgmt_y']
+    
     agru1['Mgmt HT (s)'] = (agru1['Order Mgmt HT (hr)'] / agru1['Order Mgmt Interactions'] * 3600).fillna(0)
-    #wload['Analog Order WL'] = (wload['W Ana_x'] / wload['W Ana_y']).fillna(0)
-    #wload['Digital Order WL'] = (wload['W Dig_x'] / wload['W Dig_y']).fillna(0)
-    #wload['Mgmt Interactions']= (wload['W Int_x'] / wload['W Int_y']).fillna(0)
-    #keep = ['Market','Time Zone', 'Day', 'Hour', 'Mgmt WL', 'Mgmt HT (s)','Mgmt Interactions', 'Analog Order WL', 'Digital Order WL']
-    #wload.loc[(wload['Day'] == 'Saturday') & (wload['Hour'] >= wload['Sat Close']), ['Mgmt WL', 'Mgmt HT (s)', 'Analog Order WL', 'Digital Order WL']] = 0
-    #wload = wload[keep]
+    
     agru1=agru1.fillna(0)
     agru1['Digital Order WL flat'] = 1 / len(agru1)
     return agru1
@@ -71,26 +68,16 @@ def historic_time(avg):
     weekly['digitization_create']=avg['Digitizable Orders'].sum()/avg['Total Orders'].sum()
     weekly['digitization_cancel']=avg['Cancellation Digitizable'].sum()/(avg['Cancellation Digital'].sum()+avg['Cancellation Analog'].sum())
     weekly['digitization_modify']=avg['Modification Digitizable'].sum()/(avg['Modification Digital'].sum()+avg['Modification Analog'].sum())
-    weekly['auto_create']=(avg['Digital Auto'].sum()+avg['Analog Auto'].sum())/avg['Digitizable Orders'].sum()
+    weekly['auto_create']=min(avg['Digital Auto'].sum()/avg['Digitizable Orders'].sum(),1.0)
+    weekly['ana_auto_create']=min(avg['Analog Auto'].sum()/avg['Digitizable Orders'].sum(),1.0)
     weekly['ht_create_ana']=avg['HTCreate'].sum()/(avg['Analog Total'].sum())
     weekly['ht_modify']=avg['HTModify'].sum()/(avg['Modification Analog'].sum()+avg['Modification Digital'].sum())
     weekly['ht_cancel']=avg['HTCancel'].sum()/(avg['Cancellation Analog'].sum()+avg['Cancellation Digital'].sum())
-    weekly['ht_mgmt']=avg['HTOther'].sum()/avg['Total Orders'].sum()
+    weekly['ht_other']=avg['HTOther'].sum()/avg['Total Orders'].sum()
+    weekly['ht_o_mgmt']=avg['HTOManage'].sum()/avg['Total Orders'].sum()
+    weekly['ht_d_mgmt']=avg['HTDManage'].sum()/avg['Total Orders'].sum()
     weekly['mod_rate']=(avg['Modification Analog'].sum()+avg['Modification Digital'].sum())/avg['Total Orders'].sum()
     weekly['can_rate']=(avg['Cancellation Analog'].sum()+avg['Cancellation Digital'].sum())/avg['Total Orders'].sum()
-    #weekly = avg[['Market']].copy()
-    #weekly['Peak Orders'] = np.ceil(avg['Peak Orders'] * 12 / 52)
-    #weekly['Digital Orders'] = weekly['Peak Orders'] * avg['Adoption']
-    #weekly['Analog Orders'] = weekly['Peak Orders'] * (1 - avg['Adoption'])
-    #weekly['Digital Creation'] = weekly['Peak Orders'] * avg['Adoption'] * (
-                #d_auto + (1 - avg['Automation']) * d_rev) / 60
-    #weekly['Analog Creation'] = weekly['Peak Orders'] * (1 - avg['Adoption']) * avg[
-        #'HT per Created Analog Order (sec)'] / 60
-    #weekly['Modification'] = weekly['Peak Orders'] * avg['Modify Rate'] * (1 - avg['Modify Adoption']) * avg[
-        #'HT per Modified Order (sec)'] / 60
-   # weekly['Cancellation'] = weekly['Peak Orders'] * avg['Cancel Rate'] * (1 - avg['Cancel Adoption']) * avg[
-        #'HT per Cancelled Order (sec)'] / 60
-    #weekly['Other Mgmt'] = weekly['Peak Orders'] * avg['Misc. HT per Created Order (sec)'] / 60
     return weekly
 
 def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilization):
@@ -118,7 +105,8 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand['shrink_delta']=demand['positions']-demand['raw_positions']
     demand['dig delta']=demand['Digital WL']-effectivity*(demand['positions']-demand['Analog WL'])
     demand=demand.drop(['ErlangC','Interactions','AHT','ASA','Reqs'],axis=1)
-    demand=demand.fillna(0)
+    numeric_cols = demand.columns.difference(['Weekday'])
+    demand[numeric_cols]=demand[numeric_cols].fillna(0)
     c=0
     res=np.zeros(len(demand['dig delta']))
     for i,value in enumerate(demand['dig delta']):
@@ -184,8 +172,6 @@ def agg_hc(schedule):
     return tota
 
 def create_roster_fig(demand,resources):
-    #mkt=', '.join(chosen_mkts)
-    #figx=make_subplots(rows=2,cols=1,shared_xaxes=True,shared_yaxes=True,vertical_spacing=0.2,subplot_titles=(f"Historic Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}",f"Projected Demand\n{'All Markets' if len(chosen_mkts)==0 else 'Market: ' if len(chosen_mkts)==1 else 'Markets: '} {mkt}"),y_title="Workload / HC")
     figx=go.Figure()
     figx.add_trace(go.Bar(x=[resources['Weekday'],resources['Hour']],y=resources['Headcount'],name='Suggested Roster',marker=dict(color='#0068c9'),legendgroup='A',showlegend=True))
     figx.add_trace(go.Scatter(x=[demand['Weekday'],demand['Hour']],y=demand['positions'],mode='lines',line=dict(color='#9a9a9a', width=3,shape='hvh'),name='Headcount Demand',legendgroup='A',showlegend=True))
@@ -250,6 +236,8 @@ def calculate_resources(demand):
 
 if __name__ == '__main__':
     st.set_page_config(layout="wide")
+    if 'count' not in st.session_state:
+        st.session_state.count = 0
     timezones=['PACIFIC','PHX','CENTRAL','EAST']
     days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
     work=workload_ini()
@@ -257,11 +245,11 @@ if __name__ == '__main__':
     cola,colb=st.columns([1,4])
     with cola:
         st.title("WFM")
-        chosen_mkts=st.multiselect('Market(s):', avail_mkt)
-        date_range=st.slider(label="Historic Data Date Range",min_value=min(work['Date']),max_value=max(work['Date']),value=(min(work['Date']),max(work['Date'])),format="MMM/YY",key='date_range')
-        summ = pd.read_csv('summary.csv')
+        chosen_mkts=st.multiselect('Market(s):', avail_mkt, on_change=reset_widgets)
+        date_range=st.slider(label="Historic Data Date Range",min_value=min(work['Date']),max_value=max(work['Date']),value=(min(work['Date']),max(work['Date'])),format="MMM/YY",key='date_range',on_change=reset_widgets)
+        summ = pd.read_csv('monthly_summary.csv')
         summ['Date']= summ.apply(lambda row: date(row['Year'],row['Month'],1),axis=1)
-        media=pd.read_csv('media_types.csv',header=0)
+        media=pd.read_csv('media_types2.csv',header=0)
         media['Date']= media.apply(lambda row: date(row['YEAR'],row['MONTH'],1),axis=1)  
         if len(chosen_mkts)==0:
             work_fil=work[work['Date'].between(date_range[0].replace(day=1),date_range[1].replace(day=1))]
@@ -418,7 +406,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['peak']:.0f}")
                     with c3:
-                        proj_param['peak']=st.number_input(label='',min_value=0.0,value=round(historic['peak'],0),format='%0.0f')
+                        proj_param['peak']=st.number_input(label='',min_value=0,key=f"peaky_{st.session_state.count}",value=int(round(historic['peak'],0)))
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -426,7 +414,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['adoption']:.2%}")
                     with c3:
-                        proj_param['adoption']=st.slider(label='',min_value=historic['adoption'],max_value=1.0,value=historic['adoption'],format="percent", key='p_ado')
+                        proj_param['adoption']=st.number_input(label='',min_value=0.00,max_value=100.00, key=f"p_ado_{st.session_state.count}",value=historic['adoption']*100)/100
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -442,7 +430,15 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['auto_create']:.2%}")
                     with c3:
-                        proj_param['auto_create']=st.slider(label='',min_value=historic['auto_create'],max_value=1.0,value=historic['auto_create'],format="percent",key='p_auto')    
+                        proj_param['auto_create']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_auto_{st.session_state.count}",value=historic['auto_create']*100)/100
+                with st.container(border=False):
+                    c1,c2,c3=st.columns(3,vertical_alignment='center')
+                    with c1:
+                        st.write("DCO-Assisted Analog Orders")
+                    with c2:
+                        st.write(f"{historic['ana_auto_create']:.2%}")
+                    with c3:
+                        proj_param['ana_auto_create']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_ana_auto_{st.session_state.count}",value=historic['ana_auto_create']*100)/100    
             with st.expander("Order Management Parameters"):
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
@@ -457,7 +453,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['mod_rate']:.2%}")
                     with c3:
-                        proj_param['mod_rate']=st.slider(label='',min_value=0.0,max_value=1.0,value=historic['mod_rate'],format="percent",key='p_modrate')
+                        proj_param['mod_rate']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_modrate_{st.session_state.count}",value=historic['mod_rate']*100)/100
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -465,7 +461,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['mod_adoption']:.2%}")
                     with c3:
-                        proj_param['mod_adoption']=st.slider(label='',min_value=historic['mod_adoption'],max_value=1.0,value=historic['mod_adoption'],format="percent",key='p_modado')
+                        proj_param['mod_adoption']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_modado_{st.session_state.count}",value=historic['mod_adoption']*100)/100
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -481,7 +477,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['can_rate']:.2%}")
                     with c3:
-                        proj_param['can_rate']=st.slider(label='',min_value=0.0,max_value=1.0,value=historic['can_rate'],format="percent",key='p_canrate')
+                        proj_param['can_rate']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_canrate_{st.session_state.count}",value=historic['can_rate']*100)/100
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -489,7 +485,7 @@ if __name__ == '__main__':
                     with c2:
                         st.write(f"{historic['can_adoption']:.2%}")
                     with c3:
-                        proj_param['can_adoption']=st.slider(label='',min_value=historic['can_adoption'],max_value=1.0,value=historic['can_adoption'],format="percent",key='p_canado"')
+                        proj_param['can_adoption']=st.number_input(label='',min_value=0.00,max_value=100.00,key=f"p_canado_{st.session_state.count}",value=historic['can_adoption']*100)/100
                 with st.container(border=False):
                     c1,c2,c3=st.columns(3,vertical_alignment='center')
                     with c1:
@@ -506,13 +502,13 @@ if __name__ == '__main__':
                 with col1:
                     h={'Digital (Confirmed)':(historic['peak']*historic['adoption']*historic['digitization_create']*historic['auto_create']),
                     "Digital (In Review)":(historic['peak']*historic['adoption']*historic['digitization_create']*(1-historic['auto_create'])),
-                    "Analog (Confirmed)":(historic['peak']*(1-historic['adoption']*historic['digitization_create'])*historic['auto_create']),
-                    "Analog (In Review)":(historic['peak']*(1-historic['adoption']*historic['digitization_create'])*(1-historic['auto_create']))
+                    "Analog (Confirmed)":(historic['peak']*(1-historic['adoption']*historic['digitization_create'])*historic['ana_auto_create']),
+                    "Analog (In Review)":(historic['peak']*(1-historic['adoption']*historic['digitization_create'])*(1-historic['ana_auto_create']))
                     }
                     p={'Digital (Confirmed)':(proj_param['peak']*proj_param['adoption']*historic['digitization_create']*proj_param['auto_create']),
                     "Digital (In Review)":(proj_param['peak']*proj_param['adoption']*historic['digitization_create']*(1-proj_param['auto_create'])),
-                    "Analog (Confirmed)":(proj_param['peak']*(1-proj_param['adoption']*historic['digitization_create'])*proj_param['auto_create']),
-                    "Analog (In Review)":(proj_param['peak']*(1-proj_param['adoption']*historic['digitization_create'])*(1-proj_param['auto_create']))
+                    "Analog (Confirmed)":(proj_param['peak']*(1-proj_param['adoption']*historic['digitization_create'])*proj_param['ana_auto_create']),
+                    "Analog (In Review)":(proj_param['peak']*(1-proj_param['adoption']*historic['digitization_create'])*(1-proj_param['ana_auto_create']))
                     }
                     md={'Historic Values':h,'Projected Values':p}
                     ord=pd.DataFrame(md)
@@ -529,12 +525,16 @@ if __name__ == '__main__':
                         'Analog Order Creation': (historic['ht_create_ana']*h['Analog (Confirmed)']+(historic['ht_create_ana']+ana_rev)*h['Analog (In Review)'])/3600,
                         'Order Modification': historic['peak']*historic['mod_rate']*(1-historic['mod_adoption']*historic['digitization_modify'])*historic['ht_modify']/3600,
                         'Order Cancellation': historic['peak']*historic['can_rate']*(1-historic['can_adoption']*historic['digitization_cancel'])*historic['ht_cancel']/3600,
-                        'Misc. Order Management': historic['peak']*historic['ht_mgmt']/3600}
+                        'Order Management': historic['peak']*historic['ht_o_mgmt']/3600,
+                        'Delivery Management': historic['peak']*historic['ht_d_mgmt']/3600,
+                        'Other Activities': historic['peak']*historic['ht_other']/3600}
                     p2={'Digital Order Creation': (dig_auto*p['Digital (Confirmed)']+dig_rev*p['Digital (In Review)'])/3600,
                         'Analog Order Creation': (historic['ht_create_ana']*p['Analog (Confirmed)']+(historic['ht_create_ana']+ana_rev)*p['Analog (In Review)'])/3600,
                         'Order Modification': proj_param['peak']*proj_param['mod_rate']*(1-proj_param['mod_adoption']*historic['digitization_modify'])*historic['ht_modify']/3600,
                         'Order Cancellation': proj_param['peak']*proj_param['can_rate']*(1-proj_param['can_adoption']*historic['digitization_cancel'])*historic['ht_cancel']/3600,
-                        'Misc. Order Management': proj_param['peak']*historic['ht_mgmt']/3600}
+                        'Order Management': proj_param['peak']*historic['ht_o_mgmt']/3600,
+                        'Delivery Management': proj_param['peak']*historic['ht_d_mgmt']/3600,
+                        'Other Activities': proj_param['peak']*historic['ht_other']/3600}
 
                     md2={'Historic Values':h2,'Projected Values':p2}
                     ord2=pd.DataFrame(md2)
@@ -554,11 +554,12 @@ if __name__ == '__main__':
                 with col3:
                     fig=px.pie(ordx,values='value',names='Activity',facet_col='Scenario',labels={'index':'Scenario','value':'Orders','Activity':'Order type'},hole=0.7,facet_col_spacing=0.08,hover_data={'value':':.0f'})
                     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-                    fig.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=50))
+                    fig.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2, xanchor="center", x=0.5),margin=dict(b=10,l=30,r=10), height=350)
                     with st.container(border=True):
-                        st.plotly_chart(fig)
+                        st.plotly_chart(fig,use_container_width=True)
                 with col4:
-                    fig2=px.bar(ord5,x='Scenario',y='value',color='Activity',labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity','percentage_of_total':"% of Workload"},hover_data={'Activity': False,'Scenario': False,'value':':.1f','percentage_of_total':':.1%'})
+                    fig2=px.bar(ord5,x='Scenario',y='value',color='Activity',labels={'index':'Scenario','value':'Workload (hr)','variable':'Activity','percentage_of_total':"% of Workload"},hover_data={'Activity': False,'Scenario': False,'value':':.1f','percentage_of_total':':.1%'},barmode='stack')
+                    fig2.update_layout(barmode='stack')
                     with st.container(border=True):
                         st.plotly_chart(fig2)
         with tab2:
