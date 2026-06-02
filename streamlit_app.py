@@ -85,7 +85,7 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand['Hour']=wl['AHour']
     mipo=tot/wl['Order Management Interactions'].sum()
     demand['Interactions']=(fac['Digital (Confirmed)']+fac['Digital (In Review)'])*wl['W Dig']+(fac['Analog (Confirmed)']+fac['Analog (In Review)'])*wl['W Ana']+wl['W Int']*peak*mipo
-    demand['AHT']=((su['Digital Order Creation']*wl['Digital Order WL flat']+su['Analog Order Creation']*wl['W Ana']+(su['Order Modification']+su['Order Cancellation']+su['Misc. Order Management'])*wl['W Mgmt'])*60)/demand['Interactions']
+    demand['AHT']=((su['Digital Order Creation']*wl['Digital Order WL flat']+su['Analog Order Creation']*wl['W Ana']+(su['Order Modification']+su['Order Cancellation']+su['Order Management']+su['Delivery Management']+su['Other Activities'])*wl['W Mgmt'])*60)/demand['Interactions']
     demand['ASA']=(as1*((fac['Analog (Confirmed)']+fac['Analog (In Review)'])*wl['W Ana']+wl['W Int']*peak*mipo)+as2*(fac['Digital (Confirmed)']+fac['Digital (In Review)'])*wl['W Dig'])/demand['Interactions']
     demand['ErlangC'] = demand.apply(
         lambda row: ErlangC(transactions=row['Interactions'], asa=row['ASA'], aht=row['AHT'], interval=60,
@@ -97,7 +97,7 @@ def intensity(wl,fac,su,tot,peak,as1,as2,effectivity,service_level,max_utilizati
     demand = pd.concat([demand, requirements], axis=1)
     demand['Digital WL']=su['Digital Order Creation']*wl['W Dig']
     demand['Digital WL flat']=su['Digital Order Creation']*wl['Digital Order WL flat']
-    demand['Analog WL']=su['Analog Order Creation']*wl['W Ana']+(su['Order Modification']+su['Order Cancellation']+su['Misc. Order Management'])*wl['W Mgmt']
+    demand['Analog WL']=su['Analog Order Creation']*wl['W Ana']+(su['Order Modification']+su['Order Cancellation']+su['Order Management']+su['Delivery Management']+su['Other Activities'])*wl['W Mgmt']
     demand['Total Workload']=demand['Analog WL']+demand['Digital WL flat']
     demand['positions']=demand['positions'].astype('Int64')
     demand['raw_positions']=demand['raw_positions'].astype('Int64')
